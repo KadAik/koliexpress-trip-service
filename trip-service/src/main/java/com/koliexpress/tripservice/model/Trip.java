@@ -9,6 +9,7 @@ import com.koliexpress.tripservice.enums.TripStatus;
 import com.koliexpress.tripservice.model.transport.Transport;
 import com.koliexpress.tripservice.valueobjects.Location;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -34,10 +35,12 @@ public class Trip {
     @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "traveler_id", nullable = false)
     private Traveler traveler;
 
+    @NotNull
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "name", column = @Column(name = "origin_name")),
@@ -48,6 +51,7 @@ public class Trip {
     })
     private Location origin;
 
+    @NotNull
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "name", column = @Column(name = "destination_name")),
@@ -58,15 +62,19 @@ public class Trip {
     })
     private Location destination;
 
+    @NotNull
     @Column(name = "departure_date", nullable = false)
     private LocalDateTime departureDate;
 
+    @NotNull
     @Column(name = "arrival_date", nullable = false)
     private LocalDateTime arrivalDate;
 
+    @NotNull
     @Column(name = "available_weight", nullable = false)
     private BigDecimal availableWeight;
 
+    @NotNull
     @Column(name = "price_per_kg", nullable = false)
     private BigDecimal pricePerKg;
 
@@ -74,11 +82,13 @@ public class Trip {
     private BigDecimal priceAsked;
 
     // Transport type (FLIGHT, BUS, CAR, etc.)
+    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "transport_type", nullable = false)
     private TransportType transportType;
 
     // Details specific to the transport (polymorphic) : FlightTransport, BusTransport, etc.
+    @NotNull
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JoinColumn(name = "transport_id")
     private Transport transport;
@@ -109,6 +119,13 @@ public class Trip {
 
     public boolean isCar() {
         return TransportType.CAR.equals(transportType);
+    }
+
+    public boolean isActive() {
+        return switch (status) {
+            case AVAILABLE, MATCHED, IN_PROGRESS -> true;
+            default -> false;
+        };
     }
 
 }
