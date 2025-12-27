@@ -4,6 +4,8 @@ import com.koliexpress.tripservice.dto.transport.BusTransportRequestDTO;
 import com.koliexpress.tripservice.dto.transport.CarTransportRequestDTO;
 import com.koliexpress.tripservice.dto.transport.FlightTransportRequestDTO;
 import com.koliexpress.tripservice.dto.trip.*;
+import com.koliexpress.tripservice.exceptions.InvalidArgumentException;
+import com.koliexpress.tripservice.exceptions.ResourceNotFoundException;
 import com.koliexpress.tripservice.mapper.TripMapper;
 import com.koliexpress.tripservice.mapper.transport.BusTransportMapper;
 import com.koliexpress.tripservice.mapper.transport.CarTransportMapper;
@@ -16,6 +18,7 @@ import com.koliexpress.tripservice.model.transport.FlightTransport;
 import com.koliexpress.tripservice.repository.TravelerRepository;
 import com.koliexpress.tripservice.repository.TripRepository;
 import com.koliexpress.tripservice.service.TripService;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -58,19 +61,29 @@ public class TripServiceImpl implements TripService {
 
     @Override
     public TripResponseDTO getTripById(String id){
-        UUID tripId = UUID.fromString(id);
+        if (id == null || id.isEmpty()) {
+            throw new InvalidArgumentException("ID is required", "id");
+        }
+        UUID tripId;
+        try {
+            tripId = UUID.fromString(id);
+        } catch (IllegalArgumentException e) {
+            throw new InvalidArgumentException("Invalid UUID format", "id");
+        }
+
         Trip repositoryTrip = tripRepository
             .findById(tripId)
-            .orElseThrow(() -> new RuntimeException("Trip with id " + id + " not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("Trip with id " + id + " not found"));
         return tripMapper.toResponseDTO(repositoryTrip);
     }
 
     @Override
+    @Transactional
     public TripResponseDTO createFlightTrip(FlightTripRequestDTO request){
         // 1. Find the traveler
         Traveler traveler = travelerRepository
             .findById(request.getTravelerId())
-            .orElseThrow(() -> new RuntimeException("Traveler with id " + request.getTravelerId() + " not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("Traveler with id " + request.getTravelerId() + " not found"));
 
         // 2. Map the request DTO to Trip entity
         Trip trip = tripMapper.toTrip(request);
@@ -89,9 +102,14 @@ public class TripServiceImpl implements TripService {
     }
 
     @Override
+    @Transactional
     public TripResponseDTO createBusTrip(BusTripRequestDTO request){
         // 1. Find the traveler
-        Traveler traveler = travelerRepository.findById(request.getTravelerId()).orElseThrow();
+        Traveler traveler = travelerRepository
+        .findById(request.getTravelerId())
+        .orElseThrow(
+            () -> new ResourceNotFoundException("Traveler with id " + request.getTravelerId() + " not found")
+        );
 
         // 2. Map the request DTO to Trip entity
         Trip trip = tripMapper.toTrip(request);
@@ -110,9 +128,14 @@ public class TripServiceImpl implements TripService {
     }
 
     @Override
+    @Transactional
     public TripResponseDTO createCarTrip(CarTripRequestDTO request){
         // 1. Find the traveler
-        Traveler traveler = travelerRepository.findById(request.getTravelerId()).orElseThrow();
+        Traveler traveler = travelerRepository
+            .findById(request.getTravelerId())
+            .orElseThrow(
+                () -> new ResourceNotFoundException("Traveler with id " + request.getTravelerId() + " not found")
+            );
 
         // 2. Map the request DTO to Trip entity
         Trip trip = tripMapper.toTrip(request);
