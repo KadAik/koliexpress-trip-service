@@ -6,6 +6,7 @@ import com.koliexpress.tripservice.dto.LocationResponseDTO;
 import com.koliexpress.tripservice.dto.transport.TransportResponseDTO;
 import com.koliexpress.tripservice.enums.TransportType;
 import com.koliexpress.tripservice.enums.TripStatus;
+import lombok.Builder;
 import lombok.Value;
 
 import java.io.Serializable;
@@ -17,6 +18,7 @@ import java.util.UUID;
  * DTO for {@link com.koliexpress.tripservice.model.Trip}
  */
 @Value
+@Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class TripResponseDTO implements Serializable {
     UUID id;
