@@ -14,6 +14,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class TravelerSummaryResponseDTO implements Serializable {
     UUID id;
 
+    @JsonProperty("name")
+    String name;
+
+    @JsonProperty("contact")
+    String contact;
+
     @JsonProperty("active_trip_count")
     int activeTripCount;
 }
