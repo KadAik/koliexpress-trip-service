@@ -5,7 +5,7 @@ import com.koliexpress.tripservice.dto.TravelerRequestDTO;
 import com.koliexpress.tripservice.dto.TravelerSummaryResponseDTO;
 import com.koliexpress.tripservice.exceptions.InvalidArgumentException;
 import com.koliexpress.tripservice.exceptions.ResourceNotFoundException;
-import com.koliexpress.tripservice.mapper.transport.TravelerMapper;
+import com.koliexpress.tripservice.mapper.TravelerMapper;
 import com.koliexpress.tripservice.model.Traveler;
 import com.koliexpress.tripservice.repository.TravelerRepository;
 import com.koliexpress.tripservice.service.TravelerService;
@@ -29,7 +29,7 @@ public class TravelerServiceImpl implements TravelerService {
     @Override
     public List<TravelerSummaryResponseDTO> getAllTravelers() {
         return travelerRepository.findAll().stream()
-                .map(travelerMapper::toSummaryResponseDTO)
+                .map(travelerMapper::toSummaryDTO)
                 .toList();
     }
 
@@ -49,7 +49,7 @@ public class TravelerServiceImpl implements TravelerService {
                 .orElseThrow(
                     () -> new ResourceNotFoundException("Traveler with id " + id + " not found")
                 );
-        return travelerMapper.toDetailResponseDTO(repositoryTraveler);
+        return travelerMapper.toDTO(repositoryTraveler);
     }
 
     @Override
@@ -57,6 +57,6 @@ public class TravelerServiceImpl implements TravelerService {
     public TravelerDetailResponseDTO createTraveler(TravelerRequestDTO request) {
         Traveler travelerToSave = travelerMapper.toEntity(request);
         Traveler savedTraveler = travelerRepository.save(travelerToSave);
-        return travelerMapper.toDetailResponseDTO(savedTraveler);
+        return travelerMapper.toDTO(savedTraveler);
     }
 }
