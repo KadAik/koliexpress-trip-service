@@ -2,6 +2,10 @@ package com.koliexpress.tripservice.controller;
 
 import com.koliexpress.tripservice.dto.trip.*;
 import com.koliexpress.tripservice.service.TripService;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,6 +21,20 @@ public class TripController {
     }
 
     @GetMapping
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Successfully retrieved list of trips",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = TripResponseDTO.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Internal server error"
+            )
+    })
     public List<TripResponseDTO> getAllTrips(){
         return tripService.getAllTrips();
     }
