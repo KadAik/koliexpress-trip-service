@@ -86,7 +86,7 @@ public class TripServiceImpl implements TripService {
             .orElseThrow(() -> new ResourceNotFoundException("Traveler with id " + request.getTravelerId() + " not found"));
 
         // 2. Map the request DTO to Trip entity
-        Trip trip = tripMapper.toTrip(request);
+        Trip trip = tripMapper.toEntity(request);
 
         // 3. Add the missing fields
         trip.setTraveler(traveler);
@@ -112,7 +112,7 @@ public class TripServiceImpl implements TripService {
         );
 
         // 2. Map the request DTO to Trip entity
-        Trip trip = tripMapper.toTrip(request);
+        Trip trip = tripMapper.toEntity(request);
 
         // 3. Add the missing fields
         trip.setTraveler(traveler);
@@ -138,7 +138,7 @@ public class TripServiceImpl implements TripService {
             );
 
         // 2. Map the request DTO to Trip entity
-        Trip trip = tripMapper.toTrip(request);
+        Trip trip = tripMapper.toEntity(request);
 
         // 3. Add the missing fields
         trip.setTraveler(traveler);
@@ -153,8 +153,29 @@ public class TripServiceImpl implements TripService {
     }
 
     @Override
-    public TripResponseDTO updateTrip(String id, TripRequestDTO request){
-        return null;
+    @Transactional
+    public <R extends TripRequestDTO> TripResponseDTO updateTrip(String id, R request){
+        // 1. Retrieve the Trip to be updated
+        Trip repositoryTrip = tripRepository
+                .findById(UUID.fromString(id))
+                .orElseThrow(() -> new ResourceNotFoundException("Trip with id " + id + " not found"));
+
+        // 2. Perform the update
+        Trip updatedTrip = switch (request) {
+            case FlightTripRequestDTO flightTripRequestDTO ->
+                    tripMapper.updateEntityFromDtoAndReturn(flightTripRequestDTO, repositoryTrip);
+            case BusTripRequestDTO busTripRequestDTO ->
+                    tripMapper.updateEntityFromDtoAndReturn(busTripRequestDTO, repositoryTrip);
+            case CarTripRequestDTO carTripRequestDTO ->
+                    tripMapper.updateEntityFromDtoAndReturn(carTripRequestDTO, repositoryTrip);
+            default ->
+                    throw new InvalidArgumentException("Unsupported TripRequestDTO type : " + request.getClass().getName(), "request");
+        };
+
+        // 3. Save the updated Trip : due to @Transactional, this is optional but for clarity
+        Trip savedTrip = tripRepository.save(updatedTrip);
+
+        return tripMapper.toResponseDTO(savedTrip);
     }
 
     public void deleteTrip(String id){

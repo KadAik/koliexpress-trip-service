@@ -15,7 +15,7 @@ public interface TripService {
 
     TripResponseDTO createCarTrip(CarTripRequestDTO trip);
 
-    TripResponseDTO updateTrip(String id, TripRequestDTO tripDTO);
+    <R extends TripRequestDTO> TripResponseDTO updateTrip(String id, R request);
 
     void deleteTrip(String id);
 }

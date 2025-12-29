@@ -59,9 +59,19 @@ public class TripController {
         return tripService.createCarTrip(trip);
     }
 
-    @PutMapping("/{id}")
-    public TripResponseDTO updateTrip(@PathVariable String id, @RequestBody TripRequestDTO trip){
-        return tripService.updateTrip(id, trip);
+    @PutMapping("/flights/{id}")
+    public TripResponseDTO updateFlightTrip(@PathVariable String id, @RequestBody FlightTripRequestDTO request){
+        return tripService.updateTrip(id, request);
+    }
+
+    @PutMapping("/buses/{id}")
+    public TripResponseDTO updateBusTrip(@PathVariable String id, @RequestBody BusTripRequestDTO request){
+        return tripService.updateTrip(id, request);
+    }
+
+    @PutMapping("/cars/{id}")
+    public TripResponseDTO updateCarTrip(@PathVariable String id, @RequestBody CarTripRequestDTO request){
+        return tripService.updateTrip(id, request);
     }
 
     @DeleteMapping("/{id}")

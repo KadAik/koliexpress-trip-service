@@ -3,8 +3,7 @@ package com.koliexpress.tripservice.mapper;
 import com.koliexpress.tripservice.dto.transport.BusTransportResponseDTO;
 import com.koliexpress.tripservice.dto.transport.CarTransportResponseDTO;
 import com.koliexpress.tripservice.dto.transport.FlightTransportResponseDTO;
-import com.koliexpress.tripservice.dto.trip.TripRequestDTO;
-import com.koliexpress.tripservice.dto.trip.TripResponseDTO;
+import com.koliexpress.tripservice.dto.trip.*;
 import com.koliexpress.tripservice.mapper.transport.BusTransportMapper;
 import com.koliexpress.tripservice.mapper.transport.CarTransportMapper;
 import com.koliexpress.tripservice.mapper.transport.FlightTransportMapper;
@@ -18,7 +17,8 @@ import org.mapstruct.*;
  */
 @Mapper(
         componentModel = "spring",
-        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
+        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, // preserve existing values on updates
+        unmappedSourcePolicy = ReportingPolicy.IGNORE,
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
         uses = {
                 FlightTransportMapper.class,
@@ -58,8 +58,24 @@ public interface TripMapper {
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "origin", source = "origin")
     @Mapping(target = "destination", source = "destination")
-    Trip toTrip(TripRequestDTO dto);
+    Trip toEntity(TripRequestDTO dto);
 
+    /**
+     * TripRequestDTO → Trip Entity
+     * Update existing Trip entity with values from DTO
+     */
+
+    void updateEntityFromDTO(FlightTripRequestDTO dto, @MappingTarget Trip trip);
+
+    void updateEntityFromDTO(BusTripRequestDTO dto, @MappingTarget Trip trip);
+
+    void updateEntityFromDTO(CarTripRequestDTO dto, @MappingTarget Trip trip);
+
+    Trip updateEntityFromDtoAndReturn(FlightTripRequestDTO dto, @MappingTarget Trip trip);
+
+    Trip updateEntityFromDtoAndReturn(BusTripRequestDTO dto, @MappingTarget Trip trip);
+
+    Trip updateEntityFromDtoAndReturn(CarTripRequestDTO dto, @MappingTarget Trip trip);
 
     // ============================================
     // POLYMORPHIC TRANSPORT MAPPING
