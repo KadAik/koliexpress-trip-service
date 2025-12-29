@@ -8,12 +8,17 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.koliexpress.tripservice.dto.transport.CarTransportRequestDTO;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
-@Data
 @EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
+@AllArgsConstructor
+@SuperBuilder
+@Getter
 public class CarTripRequestDTO extends TripRequestDTO {
+
+
 
     @NotNull
     @Valid

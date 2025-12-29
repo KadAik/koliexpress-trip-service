@@ -23,7 +23,8 @@ import org.mapstruct.*;
         uses = {
                 FlightTransportMapper.class,
                 BusTransportMapper.class,
-                CarTransportMapper.class
+                CarTransportMapper.class,
+                LocationMapper.class
         }
 )
 public interface TripMapper {
@@ -65,17 +66,79 @@ public interface TripMapper {
      * Update existing Trip entity with values from DTO
      */
 
+    @Mapping(target = "origin", ignore = true)
+    @Mapping(target = "destination", ignore = true)
     void updateEntityFromDTO(FlightTripRequestDTO dto, @MappingTarget Trip trip);
 
+    @Mapping(target = "origin", ignore = true)
+    @Mapping(target = "destination", ignore = true)
     void updateEntityFromDTO(BusTripRequestDTO dto, @MappingTarget Trip trip);
 
+    @Mapping(target = "origin", ignore = true)
+    @Mapping(target = "destination", ignore = true)
     void updateEntityFromDTO(CarTripRequestDTO dto, @MappingTarget Trip trip);
 
+    @Mapping(target = "origin", ignore = true)
+    @Mapping(target = "destination", ignore = true)
     Trip updateEntityFromDtoAndReturn(FlightTripRequestDTO dto, @MappingTarget Trip trip);
 
+    @Mapping(target = "origin", ignore = true)
+    @Mapping(target = "destination", ignore = true)
     Trip updateEntityFromDtoAndReturn(BusTripRequestDTO dto, @MappingTarget Trip trip);
 
+    @Mapping(target = "origin", ignore = true)
+    @Mapping(target = "destination", ignore = true)
     Trip updateEntityFromDtoAndReturn(CarTripRequestDTO dto, @MappingTarget Trip trip);
+
+    @AfterMapping
+    default void updateLocations(
+            FlightTripRequestDTO dto,
+            @MappingTarget Trip trip,
+            LocationMapper locationMapper
+    ) {
+        updateLocationsInternal(dto, trip, locationMapper);
+    }
+
+    @AfterMapping
+    default void updateLocations(
+            BusTripRequestDTO dto,
+            @MappingTarget Trip trip,
+            LocationMapper locationMapper
+    ) {
+        updateLocationsInternal(dto, trip, locationMapper);
+    }
+
+    @AfterMapping
+    default void updateLocations(
+            CarTripRequestDTO dto,
+            @MappingTarget Trip trip,
+            LocationMapper locationMapper
+    ) {
+        updateLocationsInternal(dto, trip, locationMapper);
+    }
+
+    private void updateLocationsInternal(
+            TripRequestDTO dto,
+            Trip trip,
+            LocationMapper locationMapper
+    ) {
+        if (dto.getOrigin() != null) {
+            if (trip.getOrigin() == null) {
+                trip.setOrigin(locationMapper.toEntity(dto.getOrigin()));
+            } else {
+                locationMapper.updateEntityFromDTO(dto.getOrigin(), trip.getOrigin());
+            }
+        }
+
+        if (dto.getDestination() != null) {
+            if (trip.getDestination() == null) {
+                trip.setDestination(locationMapper.toEntity(dto.getDestination()));
+            } else {
+                locationMapper.updateEntityFromDTO(dto.getDestination(), trip.getDestination());
+            }
+        }
+    }
+
 
     // ============================================
     // POLYMORPHIC TRANSPORT MAPPING

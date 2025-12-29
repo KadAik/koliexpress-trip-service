@@ -5,7 +5,10 @@ import com.koliexpress.tripservice.dto.LocationRequestDTO;
 import com.koliexpress.tripservice.enums.TransportType;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -16,6 +19,9 @@ import java.util.UUID;
  * Base DTO for TripRequest
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@SuperBuilder
 public abstract class TripRequestDTO implements Serializable {
 
     @JsonProperty("traveler_id")

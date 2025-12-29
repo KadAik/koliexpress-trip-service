@@ -154,7 +154,7 @@ public class TripServiceImpl implements TripService {
 
     @Override
     @Transactional
-    public <R extends TripRequestDTO> TripResponseDTO updateTrip(String id, R request){
+    public TripResponseDTO updateTrip(String id, TripRequestDTO request){
         // 1. Retrieve the Trip to be updated
         Trip repositoryTrip = tripRepository
                 .findById(UUID.fromString(id))
