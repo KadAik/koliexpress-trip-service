@@ -46,17 +46,17 @@ public class TripController {
 
     @PostMapping("/flights")
     public TripResponseDTO createFlightTrip(@RequestBody FlightTripRequestDTO trip){
-        return tripService.createFlightTrip(trip);
+        return tripService.createTrip(trip);
     }
 
     @PostMapping("/buses")
     public TripResponseDTO createBusTrip(@RequestBody BusTripRequestDTO trip){
-        return tripService.createBusTrip(trip);
+        return tripService.createTrip(trip);
     }
 
     @PostMapping("/cars")
     public TripResponseDTO createCarTrip(@RequestBody CarTripRequestDTO trip){
-        return tripService.createCarTrip(trip);
+        return tripService.createTrip(trip);
     }
 
     @PutMapping("/flights/{id}")

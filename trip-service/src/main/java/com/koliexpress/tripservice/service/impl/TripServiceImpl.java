@@ -1,21 +1,12 @@
 package com.koliexpress.tripservice.service.impl;
 
-import com.koliexpress.tripservice.dto.transport.BusTransportRequestDTO;
-import com.koliexpress.tripservice.dto.transport.CarTransportRequestDTO;
-import com.koliexpress.tripservice.dto.transport.FlightTransportRequestDTO;
 import com.koliexpress.tripservice.dto.trip.*;
 import com.koliexpress.tripservice.exceptions.InvalidArgumentException;
 import com.koliexpress.tripservice.exceptions.ResourceNotFoundException;
 import com.koliexpress.tripservice.mapper.LocationMapper;
 import com.koliexpress.tripservice.mapper.TripMapper;
-import com.koliexpress.tripservice.mapper.transport.BusTransportMapper;
-import com.koliexpress.tripservice.mapper.transport.CarTransportMapper;
-import com.koliexpress.tripservice.mapper.transport.FlightTransportMapper;
 import com.koliexpress.tripservice.model.Traveler;
 import com.koliexpress.tripservice.model.Trip;
-import com.koliexpress.tripservice.model.transport.BusTransport;
-import com.koliexpress.tripservice.model.transport.CarTransport;
-import com.koliexpress.tripservice.model.transport.FlightTransport;
 import com.koliexpress.tripservice.repository.TravelerRepository;
 import com.koliexpress.tripservice.repository.TripRepository;
 import com.koliexpress.tripservice.service.TripService;
@@ -32,25 +23,16 @@ public class TripServiceImpl implements TripService {
     private final TravelerRepository travelerRepository;
 
     private final TripMapper tripMapper;
-    private final FlightTransportMapper flightTransportMapper;
-    private final BusTransportMapper busTransportMapper;
-    private final CarTransportMapper carTransportMapper;
     private final LocationMapper locationMapper;
 
     public TripServiceImpl(
             TripRepository tripRepository,
             TravelerRepository travelerRepository,
             TripMapper tripMapper,
-            FlightTransportMapper flightTransportMapper,
-            BusTransportMapper busTransportMapper,
-            CarTransportMapper carTransportMapper,
             LocationMapper locationMapper) {
         this.tripRepository = tripRepository;
         this.travelerRepository = travelerRepository;
         this.tripMapper = tripMapper;
-        this.flightTransportMapper = flightTransportMapper;
-        this.busTransportMapper = busTransportMapper;
-        this.carTransportMapper = carTransportMapper;
         this.locationMapper = locationMapper;
     }
 
@@ -82,72 +64,38 @@ public class TripServiceImpl implements TripService {
 
     @Override
     @Transactional
-    public TripResponseDTO createFlightTrip(FlightTripRequestDTO request){
-        // 1. Find the traveler
+    public TripResponseDTO createTrip(TripRequestDTO request) {
+
+        // 1. Find traveler
         Traveler traveler = travelerRepository
-            .findById(request.getTravelerId())
-            .orElseThrow(() -> new ResourceNotFoundException("Traveler with id " + request.getTravelerId() + " not found"));
+                .findById(request.getTravelerId())
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Traveler with id " + request.getTravelerId() + " not found"
+                        )
+                );
 
-        // 2. Map the request DTO to Trip entity
-        Trip trip = tripMapper.toEntity(request);
+        // 2. Create Trip entity polymorphically
+        Trip trip = switch (request) {
+            case FlightTripRequestDTO flightTripRequestDTO ->
+                    tripMapper.toEntity(flightTripRequestDTO);
+            case BusTripRequestDTO busTripRequestDTO ->
+                    tripMapper.toEntity(busTripRequestDTO);
+            case CarTripRequestDTO carTripRequestDTO ->
+                    tripMapper.toEntity(carTripRequestDTO);
+            default ->
+                    throw new InvalidArgumentException(
+                            "Unsupported TripRequestDTO type : " + request.getClass().getName(),
+                            "request"
+                    );
+        };
 
-        // 3. Add the missing fields
+        // 3. Set non-mapped fields
         trip.setTraveler(traveler);
 
-        FlightTransportRequestDTO flightDetails = request.getFlightDetails();
-        FlightTransport flightTransport = flightTransportMapper.toEntity(flightDetails);
-        trip.setTransport(flightTransport);
-
-        // 4. Save the trip
+        // 4. Persist
         Trip savedTrip = tripRepository.save(trip);
 
-        return tripMapper.toResponseDTO(savedTrip);
-    }
-
-    @Override
-    @Transactional
-    public TripResponseDTO createBusTrip(BusTripRequestDTO request){
-        // 1. Find the traveler
-        Traveler traveler = travelerRepository
-        .findById(request.getTravelerId())
-        .orElseThrow(
-            () -> new ResourceNotFoundException("Traveler with id " + request.getTravelerId() + " not found")
-        );
-
-        // 2. Map the request DTO to Trip entity
-        Trip trip = tripMapper.toEntity(request);
-
-        // 3. Add the missing fields
-        trip.setTraveler(traveler);
-
-        BusTransportRequestDTO busDetails = request.getBusDetails();
-        BusTransport busTransport = busTransportMapper.toEntity(busDetails);
-        trip.setTransport(busTransport);
-
-        // 4. Save the trip
-        Trip savedTrip = tripRepository.save(trip);
-
-        return tripMapper.toResponseDTO(savedTrip);
-    }
-
-    @Override
-    @Transactional
-    public TripResponseDTO createCarTrip(CarTripRequestDTO request){
-        // 1. Find the traveler
-        Traveler traveler = travelerRepository
-            .findById(request.getTravelerId())
-            .orElseThrow(
-                () -> new ResourceNotFoundException("Traveler with id " + request.getTravelerId() + " not found")
-            );
-
-        // 2. Map the request DTO to Trip entity
-        Trip trip = tripMapper.toEntity(request);
-
-        // 3. Add the missing fields
-        trip.setTraveler(traveler);
-
-        // 4. Save the trip
-        Trip savedTrip = tripRepository.save(trip);
         return tripMapper.toResponseDTO(savedTrip);
     }
 
