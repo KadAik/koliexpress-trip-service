@@ -146,10 +146,6 @@ public class TripServiceImpl implements TripService {
         // 3. Add the missing fields
         trip.setTraveler(traveler);
 
-        CarTransportRequestDTO carDetails = request.getCarDetails();
-        CarTransport carTransport = carTransportMapper.toEntity(carDetails);
-        trip.setTransport(carTransport);
-
         // 4. Save the trip
         Trip savedTrip = tripRepository.save(trip);
         return tripMapper.toResponseDTO(savedTrip);
