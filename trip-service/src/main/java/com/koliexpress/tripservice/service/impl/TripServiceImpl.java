@@ -6,6 +6,7 @@ import com.koliexpress.tripservice.dto.transport.FlightTransportRequestDTO;
 import com.koliexpress.tripservice.dto.trip.*;
 import com.koliexpress.tripservice.exceptions.InvalidArgumentException;
 import com.koliexpress.tripservice.exceptions.ResourceNotFoundException;
+import com.koliexpress.tripservice.mapper.LocationMapper;
 import com.koliexpress.tripservice.mapper.TripMapper;
 import com.koliexpress.tripservice.mapper.transport.BusTransportMapper;
 import com.koliexpress.tripservice.mapper.transport.CarTransportMapper;
@@ -34,6 +35,7 @@ public class TripServiceImpl implements TripService {
     private final FlightTransportMapper flightTransportMapper;
     private final BusTransportMapper busTransportMapper;
     private final CarTransportMapper carTransportMapper;
+    private final LocationMapper locationMapper;
 
     public TripServiceImpl(
             TripRepository tripRepository,
@@ -41,14 +43,15 @@ public class TripServiceImpl implements TripService {
             TripMapper tripMapper,
             FlightTransportMapper flightTransportMapper,
             BusTransportMapper busTransportMapper,
-            CarTransportMapper carTransportMapper
-    ) {
+            CarTransportMapper carTransportMapper,
+            LocationMapper locationMapper) {
         this.tripRepository = tripRepository;
         this.travelerRepository = travelerRepository;
         this.tripMapper = tripMapper;
         this.flightTransportMapper = flightTransportMapper;
         this.busTransportMapper = busTransportMapper;
         this.carTransportMapper = carTransportMapper;
+        this.locationMapper = locationMapper;
     }
 
     @Override
@@ -163,11 +166,11 @@ public class TripServiceImpl implements TripService {
         // 2. Perform the update
         Trip updatedTrip = switch (request) {
             case FlightTripRequestDTO flightTripRequestDTO ->
-                    tripMapper.updateEntityFromDtoAndReturn(flightTripRequestDTO, repositoryTrip);
+                    tripMapper.updateEntityFromDtoAndReturn(flightTripRequestDTO, repositoryTrip, locationMapper);
             case BusTripRequestDTO busTripRequestDTO ->
-                    tripMapper.updateEntityFromDtoAndReturn(busTripRequestDTO, repositoryTrip);
+                    tripMapper.updateEntityFromDtoAndReturn(busTripRequestDTO, repositoryTrip, locationMapper);
             case CarTripRequestDTO carTripRequestDTO ->
-                    tripMapper.updateEntityFromDtoAndReturn(carTripRequestDTO, repositoryTrip);
+                    tripMapper.updateEntityFromDtoAndReturn(carTripRequestDTO, repositoryTrip, locationMapper);
             default ->
                     throw new InvalidArgumentException("Unsupported TripRequestDTO type : " + request.getClass().getName(), "request");
         };

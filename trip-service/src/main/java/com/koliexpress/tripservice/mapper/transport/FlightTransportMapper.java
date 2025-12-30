@@ -16,5 +16,5 @@ public interface FlightTransportMapper {
     FlightTransportResponseDTO toResponseDTO(FlightTransport flight);
 
     @Mapping(target = "verificationStatus", constant = "PENDING")
-    FlightTransport toEntity(FlightTransportRequestDTO flight);
+    FlightTransport toEntity(FlightTransportRequestDTO dto);
 }

@@ -1,4 +1,4 @@
-package com.koliexpress.tripservice.modelbuilder.transport;
+package com.koliexpress.tripservice.builder.model.transport;
 
 import com.koliexpress.tripservice.enums.TransportVerificationStatus;
 import com.koliexpress.tripservice.model.transport.CarTransport;

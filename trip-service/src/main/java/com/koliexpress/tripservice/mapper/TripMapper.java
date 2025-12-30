@@ -1,8 +1,6 @@
 package com.koliexpress.tripservice.mapper;
 
-import com.koliexpress.tripservice.dto.transport.BusTransportResponseDTO;
-import com.koliexpress.tripservice.dto.transport.CarTransportResponseDTO;
-import com.koliexpress.tripservice.dto.transport.FlightTransportResponseDTO;
+import com.koliexpress.tripservice.dto.transport.*;
 import com.koliexpress.tripservice.dto.trip.*;
 import com.koliexpress.tripservice.mapper.transport.BusTransportMapper;
 import com.koliexpress.tripservice.mapper.transport.CarTransportMapper;
@@ -53,13 +51,29 @@ public interface TripMapper {
      */
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "traveler", ignore = true)
-    @Mapping(target = "transport", ignore = true)
+    @Mapping(target = "transport", expression = "java(mapTransport(dto))")
     @Mapping(target = "status", constant = "DRAFT")
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "origin", source = "origin")
     @Mapping(target = "destination", source = "destination")
     Trip toEntity(TripRequestDTO dto);
+
+    default Transport mapTransport(TripRequestDTO dto) {
+        return switch (dto) {
+            case FlightTripRequestDTO flightDto ->
+                    map(flightDto.getFlightDetails());
+            case BusTripRequestDTO busDto ->
+                    map(busDto.getBusDetails());
+            case CarTripRequestDTO carDto ->
+                    map(carDto.getCarDetails());
+            default ->
+                    throw new IllegalArgumentException(
+                            "Unknown TripRequestDTO type: " + dto.getClass().getName()
+                    );
+        };
+    }
+
 
     /**
      * TripRequestDTO → Trip Entity
@@ -80,21 +94,21 @@ public interface TripMapper {
 
     @Mapping(target = "origin", ignore = true)
     @Mapping(target = "destination", ignore = true)
-    Trip updateEntityFromDtoAndReturn(FlightTripRequestDTO dto, @MappingTarget Trip trip);
+    Trip updateEntityFromDtoAndReturn(FlightTripRequestDTO dto, @MappingTarget Trip trip, @Context LocationMapper locationMapper);
 
     @Mapping(target = "origin", ignore = true)
     @Mapping(target = "destination", ignore = true)
-    Trip updateEntityFromDtoAndReturn(BusTripRequestDTO dto, @MappingTarget Trip trip);
+    Trip updateEntityFromDtoAndReturn(BusTripRequestDTO dto, @MappingTarget Trip trip, @Context LocationMapper locationMapper);
 
     @Mapping(target = "origin", ignore = true)
     @Mapping(target = "destination", ignore = true)
-    Trip updateEntityFromDtoAndReturn(CarTripRequestDTO dto, @MappingTarget Trip trip);
+    Trip updateEntityFromDtoAndReturn(CarTripRequestDTO dto, @MappingTarget Trip trip, @Context LocationMapper locationMapper);
 
     @AfterMapping
     default void updateLocations(
             FlightTripRequestDTO dto,
             @MappingTarget Trip trip,
-            LocationMapper locationMapper
+            @Context LocationMapper locationMapper
     ) {
         updateLocationsInternal(dto, trip, locationMapper);
     }
@@ -103,7 +117,7 @@ public interface TripMapper {
     default void updateLocations(
             BusTripRequestDTO dto,
             @MappingTarget Trip trip,
-            LocationMapper locationMapper
+            @Context LocationMapper locationMapper
     ) {
         updateLocationsInternal(dto, trip, locationMapper);
     }
@@ -112,7 +126,7 @@ public interface TripMapper {
     default void updateLocations(
             CarTripRequestDTO dto,
             @MappingTarget Trip trip,
-            LocationMapper locationMapper
+            @Context LocationMapper locationMapper
     ) {
         updateLocationsInternal(dto, trip, locationMapper);
     }
@@ -123,19 +137,12 @@ public interface TripMapper {
             LocationMapper locationMapper
     ) {
         if (dto.getOrigin() != null) {
-            if (trip.getOrigin() == null) {
-                trip.setOrigin(locationMapper.toEntity(dto.getOrigin()));
-            } else {
-                locationMapper.updateEntityFromDTO(dto.getOrigin(), trip.getOrigin());
-            }
+            // Location is a value object -> replace entirely.
+            trip.setOrigin(locationMapper.toEntity(dto.getOrigin()));
         }
 
         if (dto.getDestination() != null) {
-            if (trip.getDestination() == null) {
-                trip.setDestination(locationMapper.toEntity(dto.getDestination()));
-            } else {
-                locationMapper.updateEntityFromDTO(dto.getDestination(), trip.getDestination());
-            }
+            trip.setDestination(locationMapper.toEntity(dto.getDestination()));
         }
     }
 
@@ -165,4 +172,8 @@ public interface TripMapper {
     FlightTransportResponseDTO map(FlightTransport flightTransport);
     BusTransportResponseDTO map(BusTransport busTransport);
     CarTransportResponseDTO map(CarTransport carTransport);
+
+    FlightTransport map(FlightTransportRequestDTO flightTransportDto);
+    BusTransport map(BusTransportRequestDTO busTransportDto);
+    CarTransport map(CarTransportRequestDTO carTransportDto);
 }

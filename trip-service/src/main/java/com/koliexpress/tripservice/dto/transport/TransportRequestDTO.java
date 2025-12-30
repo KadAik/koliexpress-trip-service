@@ -4,14 +4,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.koliexpress.tripservice.model.transport.Transport;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
+import lombok.*;
 
 import java.io.Serializable;
 
 /**
  * DTO for {@link Transport}
  */
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode
 public class TransportRequestDTO implements Serializable {
     @NotNull
     @NotEmpty

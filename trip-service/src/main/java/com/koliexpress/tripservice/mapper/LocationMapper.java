@@ -14,13 +14,10 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE
 )
 public interface LocationMapper {
-
+    // Notice : Location is a value objetc and is not intented to be mutated after creation.
+    // Therefore, we do not provide an update method here.
 
     Location toEntity(LocationRequestDTO dto);
 
     LocationResponseDTO toDTO(Location location);
-
-    void updateEntityFromDTO(LocationRequestDTO dto, @MappingTarget Location location);
-
-    Location updateEntityFromDtoAndReturn(LocationRequestDTO dto, @MappingTarget Location location);
 }

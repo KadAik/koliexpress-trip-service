@@ -1,4 +1,4 @@
-package com.koliexpress.tripservice.modelbuilder;
+package com.koliexpress.tripservice.builder.model;
 
 import com.koliexpress.tripservice.model.Traveler;
 import java.util.UUID;
