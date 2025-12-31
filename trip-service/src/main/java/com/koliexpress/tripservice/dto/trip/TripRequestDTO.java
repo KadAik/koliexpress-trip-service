@@ -3,6 +3,7 @@ package com.koliexpress.tripservice.dto.trip;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.koliexpress.tripservice.dto.LocationRequestDTO;
 import com.koliexpress.tripservice.enums.TransportType;
+import com.koliexpress.tripservice.validation.ValidationGroups;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -25,46 +26,91 @@ import java.util.UUID;
 public abstract class TripRequestDTO implements Serializable {
 
     @JsonProperty("traveler_id")
-    @NotNull
-    UUID travelerId;
+    @NotNull(message = "Traveler ID is required", groups = ValidationGroups.Create.class)
+    private UUID travelerId;
 
-    @NotNull
+    @NotNull(message = "Origin location is required", groups = {ValidationGroups.Create.class, ValidationGroups.Update.class})
     @Valid
-    LocationRequestDTO origin;
+    private LocationRequestDTO origin;
 
-    @NotNull
+    @NotNull(message = "Destination location is required", groups = {ValidationGroups.Create.class, ValidationGroups.Update.class})
     @Valid
-    LocationRequestDTO destination;
+    private LocationRequestDTO destination;
 
     @JsonProperty("departure_date")
-    @NotNull
-    @FutureOrPresent
-    LocalDateTime departureDate;
+    @NotNull(message = "Departure date is required", groups = {ValidationGroups.Create.class, ValidationGroups.Update.class})
+    @FutureOrPresent(message = "Departure date must be in the present or future",
+            groups = {ValidationGroups.Create.class, ValidationGroups.Update.class})
+    private LocalDateTime departureDate;
 
     @JsonProperty("arrival_date")
-    @NotNull
-    @Future
-    LocalDateTime arrivalDate;
+    @NotNull(message = "Arrival date is required", groups = {ValidationGroups.Create.class, ValidationGroups.Update.class})
+    @Future(message = "Arrival date must be in the future",
+            groups = {ValidationGroups.Create.class, ValidationGroups.Update.class})
+    private LocalDateTime arrivalDate;
 
     @JsonProperty("available_weight")
-    @NotNull
-    @Positive
-    BigDecimal availableWeight;
+    @NotNull(message = "Available weight is required", groups = {ValidationGroups.Create.class, ValidationGroups.Update.class})
+    @Positive(message = "Available weight must be greater than 0",
+            groups = {ValidationGroups.Create.class, ValidationGroups.Update.class})
+    @Digits(integer = 10, fraction = 2,
+            message = "Available weight must have at most 2 decimal places",
+            groups = {ValidationGroups.Create.class, ValidationGroups.Update.class})
+    private BigDecimal availableWeight;
 
     @JsonProperty("price_per_kg")
-    @NotNull
-    @Positive
-    BigDecimal pricePerKg;
+    @NotNull(message = "Price per kilogram is required", groups = {ValidationGroups.Create.class, ValidationGroups.Update.class})
+    @Positive(message = "Price per kilogram must be greater than 0",
+            groups = {ValidationGroups.Create.class, ValidationGroups.Update.class})
+    @Digits(integer = 10, fraction = 2,
+            message = "Price per kilogram must have at most 2 decimal places",
+            groups = {ValidationGroups.Create.class, ValidationGroups.Update.class})
+    private BigDecimal pricePerKg;
 
     @JsonProperty("price_asked")
-    @NotNull
-    @Positive
-    BigDecimal priceAsked;
+    @NotNull(message = "Total price is required", groups = {ValidationGroups.Create.class, ValidationGroups.Update.class})
+    @Positive(message = "Total price must be greater than 0",
+            groups = {ValidationGroups.Create.class, ValidationGroups.Update.class})
+    @Digits(integer = 10, fraction = 2,
+            message = "Total price must have at most 2 decimal places",
+            groups = {ValidationGroups.Create.class, ValidationGroups.Update.class})
+    private BigDecimal priceAsked;
 
-    @NotNull
+    @NotNull(message = "Transport type is required", groups = {ValidationGroups.Create.class, ValidationGroups.Update.class})
     @JsonProperty("transport_type")
-    TransportType transportType;
+    private TransportType transportType;
 
-    String notice;
+    @Size(max = 500, message = "Notice cannot exceed 500 characters",
+            groups = {ValidationGroups.Create.class, ValidationGroups.Update.class})
+    private String notice;
 
+    // ========== Custom Validations ==========
+
+    @AssertTrue(message = "Arrival date must be after departure date",
+            groups = {ValidationGroups.Create.class, ValidationGroups.Update.class})
+    private boolean isArrivalAfterDeparture() {
+        if (departureDate == null || arrivalDate == null) {
+            return true; // Let @NotNull handle null cases
+        }
+        return arrivalDate.isAfter(departureDate);
+    }
+
+    @AssertTrue(message = "Available weight must be reasonable (max 1000 kg)",
+            groups = {ValidationGroups.Create.class, ValidationGroups.Update.class})
+    private boolean isValidWeight() {
+        if (availableWeight == null) {
+            return true;
+        }
+        return availableWeight.compareTo(BigDecimal.valueOf(1000)) <= 0;
+    }
+
+    @AssertTrue(message = "Price per kg cannot exceed total price",
+            groups = {ValidationGroups.Create.class, ValidationGroups.Update.class})
+    private boolean isValidPriceRatio() {
+        if (pricePerKg == null || priceAsked == null || availableWeight == null
+                || availableWeight.compareTo(BigDecimal.ZERO) == 0) {
+            return true;
+        }
+        return pricePerKg.multiply(availableWeight).compareTo(priceAsked) <= 0;
+    }
 }
