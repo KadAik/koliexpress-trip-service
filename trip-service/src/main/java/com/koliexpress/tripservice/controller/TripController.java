@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,7 +25,7 @@ public class TripController {
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
-                    description = "Successfully retrieved list of trips",
+                    description = "Successfully retrieved list of all trips",
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(implementation = TripResponseDTO.class)
@@ -45,17 +46,17 @@ public class TripController {
     }
 
     @PostMapping("/flights")
-    public TripResponseDTO createFlightTrip(@RequestBody FlightTripRequestDTO trip){
+    public TripResponseDTO createFlightTrip(@Valid @RequestBody FlightTripRequestDTO trip){
         return tripService.createTrip(trip);
     }
 
     @PostMapping("/buses")
-    public TripResponseDTO createBusTrip(@RequestBody BusTripRequestDTO trip){
+    public TripResponseDTO createBusTrip(@Valid @RequestBody BusTripRequestDTO trip){
         return tripService.createTrip(trip);
     }
 
     @PostMapping("/cars")
-    public TripResponseDTO createCarTrip(@RequestBody CarTripRequestDTO trip){
+    public TripResponseDTO createCarTrip(@Valid @RequestBody CarTripRequestDTO trip){
         return tripService.createTrip(trip);
     }
 
