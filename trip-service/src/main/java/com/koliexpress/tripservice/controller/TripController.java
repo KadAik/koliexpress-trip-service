@@ -2,11 +2,13 @@ package com.koliexpress.tripservice.controller;
 
 import com.koliexpress.tripservice.dto.trip.*;
 import com.koliexpress.tripservice.service.TripService;
+import com.koliexpress.tripservice.validation.ValidationGroups;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -46,32 +48,32 @@ public class TripController {
     }
 
     @PostMapping("/flights")
-    public TripResponseDTO createFlightTrip(@Valid @RequestBody FlightTripRequestDTO trip){
+    public TripResponseDTO createFlightTrip(@Validated(ValidationGroups.Create.class) @RequestBody FlightTripRequestDTO trip){
         return tripService.createTrip(trip);
     }
 
     @PostMapping("/buses")
-    public TripResponseDTO createBusTrip(@Valid @RequestBody BusTripRequestDTO trip){
+    public TripResponseDTO createBusTrip(@Validated(ValidationGroups.Create.class) @RequestBody BusTripRequestDTO trip){
         return tripService.createTrip(trip);
     }
 
     @PostMapping("/cars")
-    public TripResponseDTO createCarTrip(@Valid @RequestBody CarTripRequestDTO trip){
+    public TripResponseDTO createCarTrip(@Validated(ValidationGroups.Create.class) @RequestBody CarTripRequestDTO trip){
         return tripService.createTrip(trip);
     }
 
     @PutMapping("/flights/{id}")
-    public TripResponseDTO updateFlightTrip(@PathVariable String id, @RequestBody FlightTripRequestDTO request){
+    public TripResponseDTO updateFlightTrip(@PathVariable String id, @Validated(ValidationGroups.Update.class) @RequestBody FlightTripRequestDTO request){
         return tripService.updateTrip(id, request);
     }
 
     @PutMapping("/buses/{id}")
-    public TripResponseDTO updateBusTrip(@PathVariable String id, @RequestBody BusTripRequestDTO request){
+    public TripResponseDTO updateBusTrip(@PathVariable String id, @Validated(ValidationGroups.Update.class) @RequestBody BusTripRequestDTO request){
         return tripService.updateTrip(id, request);
     }
 
     @PutMapping("/cars/{id}")
-    public TripResponseDTO updateCarTrip(@PathVariable String id, @RequestBody CarTripRequestDTO request){
+    public TripResponseDTO updateCarTrip(@PathVariable String id, @Validated(ValidationGroups.Update.class) @RequestBody CarTripRequestDTO request){
         return tripService.updateTrip(id, request);
     }
 
