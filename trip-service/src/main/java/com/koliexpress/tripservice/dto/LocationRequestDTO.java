@@ -1,9 +1,7 @@
 package com.koliexpress.tripservice.dto;
 
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import com.koliexpress.tripservice.validation.ValidationGroups;
+import jakarta.validation.constraints.*;
 import lombok.Value;
 
 import java.io.Serializable;
@@ -12,20 +10,61 @@ import java.math.BigDecimal;
 @Value
 public class LocationRequestDTO implements Serializable {
 
-    @NotNull
+    @NotBlank(
+            message = "Location name is required",
+            groups = {ValidationGroups.Create.class, ValidationGroups.Update.class}
+    )
+    @Size(
+            max = 200, message = "Location name cannot exceed 200 characters",
+            groups = {ValidationGroups.Create.class, ValidationGroups.Update.class}
+    )
     String name;
 
-    @NotBlank
+    @NotBlank(
+            message = "City is required",
+            groups = {ValidationGroups.Create.class, ValidationGroups.Update.class}
+    )
+    @Size(
+            max = 100, message = "City cannot exceed 100 characters",
+            groups = {ValidationGroups.Create.class, ValidationGroups.Update.class}
+    )
     String city;
 
-    @NotBlank
+    @NotBlank(
+            message = "Country is required",
+            groups = {ValidationGroups.Create.class, ValidationGroups.Update.class}
+    )
+    @Size(
+            min = 2, max = 100, message = "Country must be between 2 and 100 characters",
+            groups = {ValidationGroups.Create.class, ValidationGroups.Update.class}
+    )
     String country;
 
-    @NotNull
-    @Min(-90) @Max(90)
+    @NotNull(
+            message = "Latitude is required",
+            groups = {ValidationGroups.Create.class, ValidationGroups.Update.class}
+    )
+    @DecimalMin(
+            value = "-90.0", message = "Latitude must be at least -90",
+            groups = {ValidationGroups.Create.class, ValidationGroups.Update.class}
+    )
+    @DecimalMax(
+            value = "90.0", message = "Latitude cannot exceed 90",
+            groups = {ValidationGroups.Create.class, ValidationGroups.Update.class}
+    )
     BigDecimal latitude;
 
-    @NotNull
-    @Min(-180) @Max(180)
+    @NotNull(
+            message = "Longitude is required",
+            groups = {ValidationGroups.Create.class, ValidationGroups.Update.class}
+    )
+    @DecimalMin(
+            value = "-180.0", message = "Longitude must be at least -180",
+            groups = {ValidationGroups.Create.class, ValidationGroups.Update.class}
+    )
+    @DecimalMax(
+            value = "180.0", message = "Longitude cannot exceed 180",
+            groups = {ValidationGroups.Create.class, ValidationGroups.Update.class}
+    )
     BigDecimal longitude;
 }

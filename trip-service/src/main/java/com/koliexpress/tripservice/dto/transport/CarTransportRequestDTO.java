@@ -1,11 +1,9 @@
 package com.koliexpress.tripservice.dto.transport;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import com.koliexpress.tripservice.validation.ValidationGroups;
+import jakarta.validation.constraints.*;
 import lombok.*;
-
 
 @Getter
 @Setter
@@ -14,25 +12,59 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = true)
 public class CarTransportRequestDTO extends TransportRequestDTO {
 
-    @NotBlank
-    @NotNull
+    @NotBlank(
+            message = "Vehicle make is required",
+            groups = {ValidationGroups.Create.class, ValidationGroups.Update.class}
+    )
+    @Size(
+            max = 50, message = "Vehicle make cannot exceed 50 characters",
+            groups = {ValidationGroups.Create.class, ValidationGroups.Update.class}
+    )
     @JsonProperty("vehicle_make")
-    String vehicleMake;
+    private String vehicleMake;
 
-    @NotBlank
-    @NotNull
+    @NotBlank(
+            message = "Vehicle model is required",
+            groups = {ValidationGroups.Create.class, ValidationGroups.Update.class}
+    )
+    @Size(
+            max = 50, message = "Vehicle model cannot exceed 50 characters",
+            groups = {ValidationGroups.Create.class, ValidationGroups.Update.class}
+    )
     @JsonProperty("vehicle_model")
-    String vehicleModel;
+    private String vehicleModel;
 
+    @Min(
+            value = 1900, message = "Vehicle year must be 1900 or later",
+            groups = {ValidationGroups.Create.class, ValidationGroups.Update.class}
+    )
+    @Max(
+            value = 2100, message = "Vehicle year cannot be in the distant future",
+            groups = {ValidationGroups.Create.class, ValidationGroups.Update.class}
+    )
     @JsonProperty("vehicle_year")
-    Integer vehicleYear;
+    private Integer vehicleYear;
 
-    @NotBlank
-    @NotNull
+    @NotBlank(
+            message = "License plate is required",
+            groups = {ValidationGroups.Create.class, ValidationGroups.Update.class}
+    )
+    @Size(
+            max = 20, message = "License plate cannot exceed 20 characters",
+            groups = {ValidationGroups.Create.class, ValidationGroups.Update.class}
+    )
+    @Pattern(
+            regexp = "^[A-Z0-9\\-\\s]+$",
+            message = "License plate can only contain letters, numbers, hyphens and spaces",
+            groups = {ValidationGroups.Create.class, ValidationGroups.Update.class}
+    )
     @JsonProperty("license_plate")
-    String licensePlate;
+    private String licensePlate;
 
+    @Size(
+            max = 30, message = "Vehicle color cannot exceed 30 characters",
+            groups = {ValidationGroups.Create.class, ValidationGroups.Update.class}
+    )
     @JsonProperty("vehicle_color")
-    String vehicleColor;
-
+    private String vehicleColor;
 }

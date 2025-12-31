@@ -1,11 +1,10 @@
 package com.koliexpress.tripservice.dto.transport;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
+import com.koliexpress.tripservice.validation.ValidationGroups;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
-
 
 @Getter
 @Setter
@@ -14,21 +13,43 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = true)
 public class BusTransportRequestDTO extends TransportRequestDTO {
 
-    @NotBlank
-    @NotNull
+    @NotBlank(
+            message = "Bus company is required",
+            groups = {ValidationGroups.Create.class, ValidationGroups.Update.class}
+    )
+    @Size(
+            max = 100, message = "Bus company cannot exceed 100 characters",
+            groups = {ValidationGroups.Create.class, ValidationGroups.Update.class}
+    )
     @JsonProperty("bus_company")
-    String busCompany;
+    private String busCompany;
 
+    @Size(
+            max = 20, message = "Bus number cannot exceed 20 characters",
+            groups = {ValidationGroups.Create.class, ValidationGroups.Update.class}
+    )
     @JsonProperty("bus_number")
-    String busNumber;
+    private String busNumber;
 
-    @NotBlank
-    @NotNull
+    @NotBlank(
+            message = "Departure station is required",
+            groups = {ValidationGroups.Create.class, ValidationGroups.Update.class}
+    )
+    @Size(
+            max = 100, message = "Departure station cannot exceed 100 characters",
+            groups = {ValidationGroups.Create.class, ValidationGroups.Update.class}
+    )
     @JsonProperty("departure_station")
-    String departureStation;
+    private String departureStation;
 
-    @NotBlank
-    @NotNull
+    @NotBlank(
+            message = "Arrival station is required",
+            groups = {ValidationGroups.Create.class, ValidationGroups.Update.class}
+    )
+    @Size(
+            max = 100, message = "Arrival station cannot exceed 100 characters",
+            groups = {ValidationGroups.Create.class, ValidationGroups.Update.class}
+    )
     @JsonProperty("arrival_station")
-    String arrivalStation;
+    private String arrivalStation;
 }

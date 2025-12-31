@@ -1,11 +1,8 @@
-// ===================================
-// Specific RequestDTO for Flight Trip
-// ===================================
-
 package com.koliexpress.tripservice.dto.trip;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.koliexpress.tripservice.dto.transport.FlightTransportRequestDTO;
+import com.koliexpress.tripservice.validation.ValidationGroups;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -18,9 +15,12 @@ import lombok.experimental.SuperBuilder;
 @Getter
 public class FlightTripRequestDTO extends TripRequestDTO {
 
-    @NotNull
+    @NotNull(
+            message = "Flight details are required",
+            groups = {ValidationGroups.Create.class, ValidationGroups.Update.class}
+    )
     @Valid
     @JsonProperty("flight_details")
-    FlightTransportRequestDTO flightDetails;
+    private FlightTransportRequestDTO flightDetails;
 
 }
