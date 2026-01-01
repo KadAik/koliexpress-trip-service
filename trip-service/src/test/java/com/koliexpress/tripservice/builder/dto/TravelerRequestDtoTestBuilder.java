@@ -36,7 +36,12 @@ public class TravelerRequestDtoTestBuilder {
     }
 
     public TravelerRequestDTO build() {
-        return new TravelerRequestDTO(firstName, lastName, email, phoneNumber);
+        TravelerRequestDTO obj = new TravelerRequestDTO();
+        obj.setFirstName(firstName);
+        obj.setLastName(lastName);
+        obj.setEmail(email);
+        obj.setPhoneNumber(phoneNumber);
+        return obj;
     }
 
     // Convenience methods for test scenarios

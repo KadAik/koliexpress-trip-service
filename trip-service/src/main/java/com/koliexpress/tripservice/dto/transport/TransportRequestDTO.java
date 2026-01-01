@@ -21,25 +21,25 @@ public class TransportRequestDTO implements Serializable {
 
     @NotBlank(
             message = "Provider name is required",
-            groups = {ValidationGroups.Create.class, ValidationGroups.Update.class}
+            groups = {ValidationGroups.Create.class, }
     )
     @Size(
             max = 100, message = "Provider name cannot exceed 100 characters",
-            groups = {ValidationGroups.Create.class, ValidationGroups.Update.class}
+            groups = {ValidationGroups.Create.class, }
     )
     @JsonProperty("provider_name")
     private String providerName;
 
     @Size(
             max = 50, message = "Reference number cannot exceed 50 characters",
-            groups = {ValidationGroups.Create.class, ValidationGroups.Update.class}
+            groups = {ValidationGroups.Create.class, }
     )
     @JsonProperty("reference_number")
     private String referenceNumber;
 
     @Size(
             max = 500, message = "Additional info cannot exceed 500 characters",
-            groups = {ValidationGroups.Create.class, ValidationGroups.Update.class}
+            groups = {ValidationGroups.Create.class, }
     )
     @JsonProperty("additional_info")
     private String additionalInfo;

@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,15 +49,18 @@ public class TripController {
     }
 
     @PostMapping("/flights")
+    @ResponseStatus(HttpStatus.CREATED)
     public TripResponseDTO createFlightTrip(@Validated(ValidationGroups.Create.class) @RequestBody FlightTripRequestDTO trip){
         return tripService.createTrip(trip);
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/buses")
     public TripResponseDTO createBusTrip(@Validated(ValidationGroups.Create.class) @RequestBody BusTripRequestDTO trip){
         return tripService.createTrip(trip);
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/cars")
     public TripResponseDTO createCarTrip(@Validated(ValidationGroups.Create.class) @RequestBody CarTripRequestDTO trip){
         return tripService.createTrip(trip);

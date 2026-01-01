@@ -1,4 +1,6 @@
-package com.koliexpress.tripservice.dto;
+package com.koliexpress.tripservice.builder.dto;
+
+import com.koliexpress.tripservice.dto.LocationRequestDTO;
 
 import java.math.BigDecimal;
 

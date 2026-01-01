@@ -1,17 +1,25 @@
 package com.koliexpress.tripservice.mapper;
 
+import com.koliexpress.tripservice.builder.dto.LocationRequestDtoTestBuilder;
+import com.koliexpress.tripservice.builder.dto.trip.BusTripRequestDtoTestBuilder;
+import com.koliexpress.tripservice.builder.dto.trip.CarTripRequestDtoTestBuilder;
 import com.koliexpress.tripservice.builder.dto.trip.FlightTripRequestDtoTestBuilder;
 import com.koliexpress.tripservice.builder.model.LocationTestBuilder;
 import com.koliexpress.tripservice.builder.model.TravelerTestBuilder;
 import com.koliexpress.tripservice.builder.model.TripTestBuilder;
-import com.koliexpress.tripservice.dto.LocationRequestDtoTestBuilder;
-import com.koliexpress.tripservice.dto.trip.*;
+import com.koliexpress.tripservice.dto.trip.FlightTripRequestDTO;
+import com.koliexpress.tripservice.dto.trip.TripRequestDTO;
+import com.koliexpress.tripservice.dto.trip.TripResponseDTO;
 import com.koliexpress.tripservice.enums.TransportType;
 import com.koliexpress.tripservice.enums.TransportVerificationStatus;
 import com.koliexpress.tripservice.enums.TripStatus;
 import com.koliexpress.tripservice.model.Trip;
 import com.koliexpress.tripservice.model.Traveler;
 
+import com.koliexpress.tripservice.model.transport.BusTransport;
+import com.koliexpress.tripservice.model.transport.CarTransport;
+import com.koliexpress.tripservice.model.transport.FlightTransport;
+import com.koliexpress.tripservice.model.transport.Transport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -132,6 +140,48 @@ class TripMapperTest {
         assertThat(result.getPriceAsked()).isEqualTo(dto.getPriceAsked());
         assertThat(result.getTransportType()).isEqualTo(dto.getTransportType());
         assertThat(result.getNotice()).isEqualTo(dto.getNotice());
+    }
+
+
+     static Stream<Arguments> tripTypeCases() {
+        return Stream.of(
+                Arguments.of(
+                        FlightTripRequestDtoTestBuilder.validFlightTrip(),
+                        TransportType.PLANE,
+                        FlightTransport.class,
+                        "departureAirportCode"
+                ),
+                Arguments.of(
+                        BusTripRequestDtoTestBuilder.validBusTrip(),
+                        TransportType.BUS,
+                        BusTransport.class,
+                        "busCompany"
+                ),
+                Arguments.of(
+                        CarTripRequestDtoTestBuilder.aCarTripRequestDto().build(),
+                        TransportType.CAR,
+                        CarTransport.class,
+                        "vehicleModel"
+                )
+        );
+    }
+
+    @ParameterizedTest(name = "Should map {0} TripRequestDTO to Trip entity with correct Transport subtype")
+    @MethodSource("tripTypeCases")
+    void testToEntity_whenGivenAnyTripRequestDto_shouldMapPolymorphically(
+            TripRequestDTO requestDto,
+            TransportType expectedTransportType,
+            Class<? extends Transport> expectedTransportClass,
+            String testField
+    ) {
+
+        // Act
+        Trip trip = tripMapper.toEntity(requestDto);
+
+        // Assert
+        assertThat(trip.getTransportType()).isEqualTo(expectedTransportType);
+        assertThat(trip.getTransport()).isInstanceOf(expectedTransportClass);
+        assertThat(trip.getTransport()).hasFieldOrProperty(testField);
     }
 
     @Test

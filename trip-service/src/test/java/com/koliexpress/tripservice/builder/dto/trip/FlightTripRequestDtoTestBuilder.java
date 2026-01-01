@@ -1,8 +1,8 @@
 package com.koliexpress.tripservice.builder.dto.trip;
 
+import com.koliexpress.tripservice.builder.dto.LocationRequestDtoTestBuilder;
 import com.koliexpress.tripservice.builder.dto.transport.FlightTransportRequestDtoTestBuilder;
 import com.koliexpress.tripservice.dto.LocationRequestDTO;
-import com.koliexpress.tripservice.dto.LocationRequestDtoTestBuilder;
 import com.koliexpress.tripservice.dto.transport.FlightTransportRequestDTO;
 import com.koliexpress.tripservice.dto.trip.FlightTripRequestDTO;
 import com.koliexpress.tripservice.enums.TransportType;

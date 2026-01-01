@@ -6,8 +6,7 @@ import com.koliexpress.tripservice.dto.LocationResponseDTO;
 import com.koliexpress.tripservice.dto.transport.TransportResponseDTO;
 import com.koliexpress.tripservice.enums.TransportType;
 import com.koliexpress.tripservice.enums.TripStatus;
-import lombok.Builder;
-import lombok.Value;
+import lombok.*;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -17,7 +16,10 @@ import java.util.UUID;
 /**
  * DTO for {@link com.koliexpress.tripservice.model.Trip}
  */
-@Value
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class TripResponseDTO implements Serializable {
