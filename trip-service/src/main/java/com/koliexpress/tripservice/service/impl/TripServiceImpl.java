@@ -53,7 +53,7 @@ public class TripServiceImpl implements TripService {
         try {
             tripId = UUID.fromString(id);
         } catch (IllegalArgumentException e) {
-            throw new InvalidArgumentException("Invalid UUID format", "id");
+            throw new InvalidArgumentException("Invalid UUID string", "id");
         }
 
         Trip repositoryTrip = tripRepository
@@ -75,20 +75,8 @@ public class TripServiceImpl implements TripService {
                         )
                 );
 
-        // 2. Create Trip entity polymorphically
-        Trip trip = switch (request) {
-            case FlightTripRequestDTO flightTripRequestDTO ->
-                    tripMapper.toEntity(flightTripRequestDTO);
-            case BusTripRequestDTO busTripRequestDTO ->
-                    tripMapper.toEntity(busTripRequestDTO);
-            case CarTripRequestDTO carTripRequestDTO ->
-                    tripMapper.toEntity(carTripRequestDTO);
-            default ->
-                    throw new InvalidArgumentException(
-                            "Unsupported TripRequestDTO type : " + request.getClass().getName(),
-                            "request"
-                    );
-        };
+        // 2. Create Trip entity
+        Trip trip = tripMapper.toEntity(request); // mapper handles polymorphism
 
         // 3. Set non-mapped fields
         trip.setTraveler(traveler);
