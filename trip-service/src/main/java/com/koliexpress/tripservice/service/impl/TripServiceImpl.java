@@ -1,5 +1,6 @@
 package com.koliexpress.tripservice.service.impl;
 
+import com.koliexpress.tripservice.dto.transport.FlightTransportResponseDTO;
 import com.koliexpress.tripservice.dto.trip.*;
 import com.koliexpress.tripservice.exceptions.InvalidArgumentException;
 import com.koliexpress.tripservice.exceptions.ResourceNotFoundException;
@@ -7,10 +8,13 @@ import com.koliexpress.tripservice.mapper.LocationMapper;
 import com.koliexpress.tripservice.mapper.TripMapper;
 import com.koliexpress.tripservice.model.Traveler;
 import com.koliexpress.tripservice.model.Trip;
+import com.koliexpress.tripservice.model.transport.FlightTransport;
+import com.koliexpress.tripservice.model.transport.Transport;
 import com.koliexpress.tripservice.repository.TravelerRepository;
 import com.koliexpress.tripservice.repository.TripRepository;
 import com.koliexpress.tripservice.service.TripService;
 import jakarta.transaction.Transactional;
+import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -45,6 +49,7 @@ public class TripServiceImpl implements TripService {
     }
 
     @Override
+    @Transactional
     public TripResponseDTO getTripById(String id){
         if (id == null || id.isEmpty()) {
             throw new InvalidArgumentException("ID is required", "id");
@@ -59,7 +64,42 @@ public class TripServiceImpl implements TripService {
         Trip repositoryTrip = tripRepository
             .findById(tripId)
             .orElseThrow(() -> new ResourceNotFoundException("Trip with id " + id + " not found"));
-        return tripMapper.toResponseDTO(repositoryTrip);
+
+        Transport transport = repositoryTrip.getTransport();
+
+        // LOG 1: Check what we got from database
+        System.out.println("=== BEFORE INITIALIZE ===");
+        System.out.println("Transport class: " + transport.getClass().getName());
+        System.out.println("Is Transport: " + (transport instanceof Transport));
+        System.out.println("Is HibernateProxy: " + (transport instanceof org.hibernate.proxy.HibernateProxy));
+        System.out.println("Is FlightTransport: " + (transport instanceof FlightTransport));
+        System.out.println("IsFlightTransport: " + (transport.isFlight()));
+
+        // UNWRAP THE PROXY
+        if (transport != null) {
+            Hibernate.initialize(transport);  // Force load from DB
+            Transport unproxied = (Transport) Hibernate.unproxy(transport);  // Get real object
+            repositoryTrip.setTransport(unproxied);  // Replace proxy with real object in Trip
+        }
+
+        // AFTER
+        System.out.println("=== AFTER UNPROXY ===");
+        System.out.println("Transport class: " + repositoryTrip.getTransport().getClass().getName());
+        System.out.println("Is HibernateProxy: " + (repositoryTrip.getTransport() instanceof org.hibernate.proxy.HibernateProxy));
+        System.out.println("Is FlightTransport: " + (repositoryTrip.getTransport() instanceof FlightTransport));
+
+        TripResponseDTO response = tripMapper.toResponseDTO(repositoryTrip);
+        // Check result
+        System.out.println("=== RESULT ===");
+        System.out.println("DTO class: " + response.getTransportDetails().getClass().getName());
+        if (response.getTransportDetails() instanceof FlightTransportResponseDTO flight) {
+            System.out.println("✓ It's a FlightTransportResponseDTO!");
+            System.out.println("Flight number: " + flight.getFlightNumber());
+        } else {
+            System.out.println("✗ It's just a base TransportResponseDTO");
+        }
+
+    return response;
     }
 
     @Override

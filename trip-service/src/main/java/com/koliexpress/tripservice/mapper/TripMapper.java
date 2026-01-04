@@ -2,11 +2,14 @@ package com.koliexpress.tripservice.mapper;
 
 import com.koliexpress.tripservice.dto.transport.*;
 import com.koliexpress.tripservice.dto.trip.*;
+import com.koliexpress.tripservice.enums.TransportType;
 import com.koliexpress.tripservice.mapper.transport.BusTransportMapper;
 import com.koliexpress.tripservice.mapper.transport.CarTransportMapper;
 import com.koliexpress.tripservice.mapper.transport.FlightTransportMapper;
+import com.koliexpress.tripservice.mapper.transport.TransportMapper;
 import com.koliexpress.tripservice.model.Trip;
 import com.koliexpress.tripservice.model.transport.*;
+import org.hibernate.Hibernate;
 import org.mapstruct.*;
 
 /**
@@ -22,7 +25,8 @@ import org.mapstruct.*;
                 FlightTransportMapper.class,
                 BusTransportMapper.class,
                 CarTransportMapper.class,
-                LocationMapper.class
+                LocationMapper.class,
+                TransportMapper.class
         }
 )
 public interface TripMapper {
@@ -36,9 +40,7 @@ public interface TripMapper {
     @Mapping(target = "travelerId", source = "traveler.id")
     @Mapping(target = "origin", source = "origin")
     @Mapping(target = "destination", source = "destination")
-    @Mapping(target = "flightDetails", expression = "java(mapFlightDetails(trip))")
-    @Mapping(target = "busDetails", expression = "java(mapBusDetails(trip))")
-    @Mapping(target = "carDetails", expression = "java(mapCarDetails(trip))")
+    @Mapping(target = "transportDetails", source = "transport")
     TripResponseDTO toResponseDTO(Trip trip);
 
     // ============================================
@@ -152,22 +154,23 @@ public interface TripMapper {
     // ============================================
 
     default FlightTransportResponseDTO mapFlightDetails(Trip trip) {
-        return trip.getTransport() instanceof FlightTransport flight
-                ? map(flight)
+        return trip.getTransport().getType() == TransportType.PLANE
+                ? map((FlightTransport) trip.getTransport())
                 : null;
     }
 
     default BusTransportResponseDTO mapBusDetails(Trip trip) {
-        return trip.getTransport() instanceof BusTransport bus
-                ? map(bus)
+        return trip.getTransport().getType() == TransportType.BUS
+                ? map((BusTransport) trip.getTransport())
                 : null;
     }
 
     default CarTransportResponseDTO mapCarDetails(Trip trip) {
-        return trip.getTransport() instanceof CarTransport car
-                ? map(car)
+        return trip.getTransport().getType() == TransportType.CAR
+                ? map((CarTransport) trip.getTransport())
                 : null;
     }
+
 
     FlightTransportResponseDTO map(FlightTransport flightTransport);
     BusTransportResponseDTO map(BusTransport busTransport);

@@ -49,14 +49,8 @@ public class TripResponseDTO implements Serializable {
     @JsonProperty("transport_type")
     TransportType transportType;
 
-    @JsonProperty("flight_details")
-    TransportResponseDTO flightDetails;
-
-    @JsonProperty("bus_details")
-    TransportResponseDTO busDetails;
-
-    @JsonProperty("car_details")
-    TransportResponseDTO carDetails;
+    @JsonProperty("transport_details")
+    TransportResponseDTO transportDetails;
 
     TripStatus status;
     String notice;

@@ -4,6 +4,7 @@
 package com.koliexpress.tripservice.model.transport;
 
 
+import com.koliexpress.tripservice.enums.TransportType;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
@@ -13,7 +14,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@DiscriminatorValue("FLIGHT")
+@DiscriminatorValue("PLANE")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -37,6 +38,11 @@ public class FlightTransport extends Transport {
 
     @Column(name = "aircraft_type")
     private String aircraftType;
+
+    @Override
+    public TransportType getType() {
+        return TransportType.PLANE;
+    }
 
     @Override
     public boolean validate() {

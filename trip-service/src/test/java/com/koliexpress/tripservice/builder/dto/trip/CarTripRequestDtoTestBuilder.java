@@ -177,7 +177,7 @@ public class CarTripRequestDtoTestBuilder {
                 .availableWeight(availableWeight)
                 .pricePerKg(pricePerKg)
                 .priceAsked(priceAsked)
-                .transportType(transportType)
+                //.transportType(transportType)
                 .notice(notice)
                 .carDetails(carDetails)
                 .build();

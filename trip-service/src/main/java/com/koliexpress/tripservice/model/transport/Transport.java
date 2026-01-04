@@ -1,5 +1,6 @@
 package com.koliexpress.tripservice.model.transport;
 
+import com.koliexpress.tripservice.enums.TransportType;
 import com.koliexpress.tripservice.enums.TransportVerificationStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -47,10 +48,14 @@ public abstract class Transport {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
-    // Hook method for specific validation
-    public abstract boolean validate();
+    @Transient
+    public abstract TransportType getType();
 
-    // Hook method to obtain a summary
+    public boolean isFlight() { return getType() == TransportType.PLANE; }
+    public boolean isBus()    { return getType() == TransportType.BUS; }
+    public boolean isCar()    { return getType() == TransportType.CAR; }
+
+    public abstract boolean validate();
     public abstract String getSummary();
 }
 

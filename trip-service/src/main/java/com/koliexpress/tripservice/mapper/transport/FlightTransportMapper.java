@@ -13,6 +13,7 @@ import org.mapstruct.ReportingPolicy;
 )
 public interface FlightTransportMapper {
 
+    @Mapping(target = "transportType", constant = "PLANE")
     FlightTransportResponseDTO toResponseDTO(FlightTransport flight);
 
     @Mapping(target = "verificationStatus", constant = "PENDING")

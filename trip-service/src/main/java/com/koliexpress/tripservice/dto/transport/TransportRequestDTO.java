@@ -1,9 +1,11 @@
 package com.koliexpress.tripservice.dto.transport;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.koliexpress.tripservice.enums.TransportType;
 import com.koliexpress.tripservice.model.transport.Transport;
 import com.koliexpress.tripservice.validation.ValidationGroups;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
@@ -18,6 +20,10 @@ import java.io.Serializable;
 @AllArgsConstructor
 @EqualsAndHashCode
 public class TransportRequestDTO implements Serializable {
+
+    @NotNull(message = "Transport type is required", groups = ValidationGroups.Create.class)
+    @JsonProperty("transport_type")
+    private TransportType type;
 
     @NotBlank(
             message = "Provider name is required",

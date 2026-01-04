@@ -88,10 +88,6 @@ public abstract class TripRequestDTO implements Serializable {
     )
     private BigDecimal priceAsked;
 
-    @NotNull(message = "Transport type is required", groups = ValidationGroups.Create.class)
-    @JsonProperty("transport_type")
-    private TransportType transportType;
-
     @Size(max = 500, message = "Notice cannot exceed 500 characters",
             groups = ValidationGroups.Create.class
     )

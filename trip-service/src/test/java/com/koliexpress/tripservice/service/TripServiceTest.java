@@ -20,6 +20,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -52,6 +53,19 @@ class TripServiceTest {
                 .aTraveler()
                 .withId(travelerId)
                 .build();
+    }
+
+    @Test
+    void testGetAllTrips_whenTripsExist_shouldReturnListOfTripsWithImportantFields(){
+
+        TripResponseDTO dto_1 = TripResponseDTO
+                .builder().build();
+
+
+        given(tripRepository.findAll())
+                .willReturn(List.of());
+
+        List<TripResponseDTO> trips = tripService.getAllTrips();
     }
 
     @Test
@@ -111,7 +125,7 @@ class TripServiceTest {
     }
 
     @Test
-    void testCreateTrip_whenTravelerIdIsNullOrMissing_shouldThrowInvalidArgumentException() {
+    void testCreateTrip_whenTravelerIdIsNullOrMissing_shouldReturnValidationErrorResponse() {
         // Arrange
         FlightTripRequestDTO request = FlightTripRequestDtoTestBuilder
                 .aFlightTripRequestDto()

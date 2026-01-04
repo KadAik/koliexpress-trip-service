@@ -130,7 +130,7 @@ public class FlightTripRequestDtoTestBuilder {
                 .availableWeight(availableWeight)
                 .pricePerKg(pricePerKg)
                 .priceAsked(priceAsked)
-                .transportType(transportType)
+                //.transportType(transportType)
                 .notice(notice)
                 .flightDetails(flightDetails)
                 .build();

@@ -3,6 +3,7 @@
 // =================
 package com.koliexpress.tripservice.model.transport;
 
+import com.koliexpress.tripservice.enums.TransportType;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
@@ -30,6 +31,11 @@ public class BusTransport extends Transport {
 
     @Column(name = "arrival_station")
     private String arrivalStation;
+
+    @Override
+    public TransportType getType() {
+        return TransportType.BUS;
+    }
 
     @Override
     public boolean validate() {
