@@ -1,8 +1,8 @@
 package com.koliexpress.tripservice.builder.dto.trip;
 
-import com.koliexpress.tripservice.dto.LocationRequestDTO;
-import com.koliexpress.tripservice.dto.trip.CarTripRequestDTO;
-import com.koliexpress.tripservice.dto.transport.CarTransportRequestDTO;
+import com.koliexpress.tripservice.dto.LocationRequestDto;
+import com.koliexpress.tripservice.dto.trip.CarTripRequestDto;
+import com.koliexpress.tripservice.dto.transport.CarTransportRequestDto;
 import com.koliexpress.tripservice.enums.TransportType;
 
 import java.math.BigDecimal;
@@ -10,15 +10,15 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**
- * Builder for creating CarTripRequestDTO instances in tests
+ * Builder for creating CarTripRequestDto instances in tests
  * Uses the Builder pattern.
  */
 public class CarTripRequestDtoTestBuilder {
 
     // Default values
     private UUID travelerId = UUID.randomUUID();
-    private LocationRequestDTO origin = createLocationRequestDTO("Pickup Point", "Cotonou", "Benin", 6.357, 2.384);
-    private LocationRequestDTO destination = createLocationRequestDTO("Drop-off Point", "Lagos", "Nigeria", 6.577, 3.321);
+    private LocationRequestDto origin = createLocationRequestDto("Pickup Point", "Cotonou", "Benin", 6.357, 2.384);
+    private LocationRequestDto destination = createLocationRequestDto("Drop-off Point", "Lagos", "Nigeria", 6.577, 3.321);
     private LocalDateTime departureDate = LocalDateTime.now().plusDays(7);
     private LocalDateTime arrivalDate = LocalDateTime.now().plusDays(7).plusHours(8);
     private BigDecimal availableWeight = BigDecimal.valueOf(30);
@@ -26,28 +26,28 @@ public class CarTripRequestDtoTestBuilder {
     private BigDecimal priceAsked = BigDecimal.valueOf(90);
     private TransportType transportType = TransportType.CAR;
     private String notice = "Handle packages carefully.";
-    private CarTransportRequestDTO carDetails = createDefaultCarTransportRequestDTO();
+    private CarTransportRequestDto carDetails = createDefaultCarTransportRequestDto();
 
     private CarTripRequestDtoTestBuilder() {}
 
      /**
-     * Create a default CarTripRequestDTO
+     * Create a default CarTripRequestDto
      */
     public static CarTripRequestDtoTestBuilder aCarTripRequestDto() {
         return new CarTripRequestDtoTestBuilder();
     }
 
     /**
-     * Create a CarTripRequestDTO from Cotonou to Lagos
+     * Create a CarTripRequestDto from Cotonou to Lagos
      */
     public static CarTripRequestDtoTestBuilder aCotonouToLagosCarTripRequest() {
         return new CarTripRequestDtoTestBuilder()
-                .withOrigin(createLocationRequestDTO("Pickup Point", "Cotonou", "Benin", 6.357, 2.384))
-                .withDestination(createLocationRequestDTO("Drop-off Point", "Lagos", "Nigeria", 6.577, 3.321));
+                .withOrigin(createLocationRequestDto("Pickup Point", "Cotonou", "Benin", 6.357, 2.384))
+                .withDestination(createLocationRequestDto("Drop-off Point", "Lagos", "Nigeria", 6.577, 3.321));
     }
 
     /**
-     * Create a CarTripRequestDTO departing tomorrow
+     * Create a CarTripRequestDto departing tomorrow
      */
     public static CarTripRequestDtoTestBuilder aCarTripRequestDepartingTomorrow() {
         return new CarTripRequestDtoTestBuilder()
@@ -61,23 +61,23 @@ public class CarTripRequestDtoTestBuilder {
         return this;
     }
 
-    public CarTripRequestDtoTestBuilder withOrigin(LocationRequestDTO origin) {
+    public CarTripRequestDtoTestBuilder withOrigin(LocationRequestDto origin) {
         this.origin = origin;
         return this;
     }
 
     public CarTripRequestDtoTestBuilder withOrigin(String name, String city, String country, double latitude, double longitude) {
-        this.origin = createLocationRequestDTO(name, city, country, latitude, longitude);
+        this.origin = createLocationRequestDto(name, city, country, latitude, longitude);
         return this;
     }
 
-    public CarTripRequestDtoTestBuilder withDestination(LocationRequestDTO destination) {
+    public CarTripRequestDtoTestBuilder withDestination(LocationRequestDto destination) {
         this.destination = destination;
         return this;
     }
 
     public CarTripRequestDtoTestBuilder withDestination(String name, String city, String country, double latitude, double longitude) {
-        this.destination = createLocationRequestDTO(name, city, country, latitude, longitude);
+        this.destination = createLocationRequestDto(name, city, country, latitude, longitude);
         return this;
     }
 
@@ -131,7 +131,7 @@ public class CarTripRequestDtoTestBuilder {
         return this;
     }
 
-    public CarTripRequestDtoTestBuilder withCarDetails(CarTransportRequestDTO carDetails) {
+    public CarTripRequestDtoTestBuilder withCarDetails(CarTransportRequestDto carDetails) {
         this.carDetails = carDetails;
         return this;
     }
@@ -143,7 +143,7 @@ public class CarTripRequestDtoTestBuilder {
             String licensePlate,
             String vehicleColor
     ) {
-        this.carDetails = new CarTransportRequestDTO(
+        this.carDetails = new CarTransportRequestDto(
                 vehicleMake,
                 vehicleModel,
                 vehicleYear,
@@ -167,8 +167,8 @@ public class CarTripRequestDtoTestBuilder {
 
     // ========== Build Method ==========
 
-    public CarTripRequestDTO build() {
-        return CarTripRequestDTO.builder()
+    public CarTripRequestDto build() {
+        return CarTripRequestDto.builder()
                 .travelerId(travelerId)
                 .origin(origin)
                 .destination(destination)
@@ -185,8 +185,8 @@ public class CarTripRequestDtoTestBuilder {
 
     // ========== Helper Methods ==========
 
-    private static LocationRequestDTO createLocationRequestDTO(String name, String city, String country, double latitude, double longitude) {
-        return new LocationRequestDTO(
+    private static LocationRequestDto createLocationRequestDto(String name, String city, String country, double latitude, double longitude) {
+        return new LocationRequestDto(
                 name,
                 city,
                 country,
@@ -195,8 +195,8 @@ public class CarTripRequestDtoTestBuilder {
         );
     }
 
-    private static CarTransportRequestDTO createDefaultCarTransportRequestDTO() {
-        return new CarTransportRequestDTO(
+    private static CarTransportRequestDto createDefaultCarTransportRequestDto() {
+        return new CarTransportRequestDto(
                 "Toyota",               // vehicleMake
                 "Camry",                // vehicleModel
                 2020,                   // vehicleYear

@@ -1,6 +1,6 @@
 package com.koliexpress.tripservice.builder.dto.transport;
 
-import com.koliexpress.tripservice.dto.transport.BusTransportRequestDTO;
+import com.koliexpress.tripservice.dto.transport.BusTransportRequestDto;
 
 public class BusTransportRequestDtoTestBuilder {
     private String providerName = "Greyhound Lines";
@@ -53,8 +53,8 @@ public class BusTransportRequestDtoTestBuilder {
         return this;
     }
 
-    public BusTransportRequestDTO build() {
-        BusTransportRequestDTO dto = new BusTransportRequestDTO();
+    public BusTransportRequestDto build() {
+        BusTransportRequestDto dto = new BusTransportRequestDto();
         dto.setProviderName(providerName);
         dto.setReferenceNumber(referenceNumber);
         dto.setAdditionalInfo(additionalInfo);
@@ -66,23 +66,23 @@ public class BusTransportRequestDtoTestBuilder {
     }
 
     // Convenience methods for common test scenarios
-    public static BusTransportRequestDTO validBusTransport() {
+    public static BusTransportRequestDto validBusTransport() {
         return aBusTransportRequestDto().build();
     }
 
-    public static BusTransportRequestDTO withEmptyBusCompany() {
+    public static BusTransportRequestDto withEmptyBusCompany() {
         return aBusTransportRequestDto()
                 .withBusCompany("")
                 .build();
     }
 
-    public static BusTransportRequestDTO withEmptyDepartureStation() {
+    public static BusTransportRequestDto withEmptyDepartureStation() {
         return aBusTransportRequestDto()
                 .withDepartureStation("")
                 .build();
     }
 
-    public static BusTransportRequestDTO megabusService() {
+    public static BusTransportRequestDto megabusService() {
         return aBusTransportRequestDto()
                 .withProviderName("Megabus")
                 .withBusCompany("Megabus")
@@ -94,7 +94,7 @@ public class BusTransportRequestDtoTestBuilder {
                 .build();
     }
 
-    public static BusTransportRequestDTO flixbusService() {
+    public static BusTransportRequestDto flixbusService() {
         return aBusTransportRequestDto()
                 .withProviderName("FlixBus")
                 .withBusCompany("FlixBus")
@@ -106,7 +106,7 @@ public class BusTransportRequestDtoTestBuilder {
                 .build();
     }
 
-    public static BusTransportRequestDTO europeanBus() {
+    public static BusTransportRequestDto europeanBus() {
         return aBusTransportRequestDto()
                 .withProviderName("Eurolines")
                 .withBusCompany("Eurolines")

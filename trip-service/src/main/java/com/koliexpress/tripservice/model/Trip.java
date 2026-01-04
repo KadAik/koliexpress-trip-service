@@ -1,7 +1,3 @@
-// ============================================
-// Trip model
-// ============================================
-
 package com.koliexpress.tripservice.model;
 
 import com.koliexpress.tripservice.enums.TransportType;
@@ -82,7 +78,7 @@ public class Trip {
     private BigDecimal priceAsked;
 
     // Transport type (FLIGHT, BUS, CAR, etc.)
-    @NotNull
+    @NotNull(message = "Transport type is required")
     @Enumerated(EnumType.STRING)
     @Column(name = "transport_type", nullable = false)
     private TransportType transportType;

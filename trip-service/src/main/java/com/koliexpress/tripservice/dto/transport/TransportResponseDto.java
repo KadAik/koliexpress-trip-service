@@ -1,6 +1,5 @@
 package com.koliexpress.tripservice.dto.transport;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -23,11 +22,11 @@ import java.util.UUID;
         visible = true
 )
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = FlightTransportResponseDTO.class, name = "PLANE"),
-        @JsonSubTypes.Type(value = BusTransportResponseDTO.class, name = "BUS"),
-        @JsonSubTypes.Type(value = CarTransportResponseDTO.class, name = "CAR")
+        @JsonSubTypes.Type(value = FlightTransportResponseDto.class, name = "PLANE"),
+        @JsonSubTypes.Type(value = BusTransportResponseDto.class, name = "BUS"),
+        @JsonSubTypes.Type(value = CarTransportResponseDto.class, name = "CAR")
 })
-public class TransportResponseDTO implements Serializable {
+public class TransportResponseDto implements Serializable {
     UUID id;
 
     @JsonProperty("transport_type")

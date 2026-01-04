@@ -1,7 +1,7 @@
 package com.koliexpress.tripservice.mapper.transport;
 
-import com.koliexpress.tripservice.dto.transport.FlightTransportRequestDTO;
-import com.koliexpress.tripservice.dto.transport.FlightTransportResponseDTO;
+import com.koliexpress.tripservice.dto.transport.FlightTransportRequestDto;
+import com.koliexpress.tripservice.dto.transport.FlightTransportResponseDto;
 import com.koliexpress.tripservice.model.transport.FlightTransport;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -14,8 +14,8 @@ import org.mapstruct.ReportingPolicy;
 public interface FlightTransportMapper {
 
     @Mapping(target = "transportType", constant = "PLANE")
-    FlightTransportResponseDTO toResponseDTO(FlightTransport flight);
+    FlightTransportResponseDto toResponseDto(FlightTransport flight);
 
     @Mapping(target = "verificationStatus", constant = "PENDING")
-    FlightTransport toEntity(FlightTransportRequestDTO dto);
+    FlightTransport toEntity(FlightTransportRequestDto dto);
 }

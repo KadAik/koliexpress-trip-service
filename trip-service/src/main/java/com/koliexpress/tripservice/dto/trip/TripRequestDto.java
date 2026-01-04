@@ -1,8 +1,10 @@
 package com.koliexpress.tripservice.dto.trip;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.koliexpress.tripservice.dto.LocationRequestDTO;
+import com.koliexpress.tripservice.dto.LocationRequestDto;
+import com.koliexpress.tripservice.dto.transport.TransportRequestDto;
 import com.koliexpress.tripservice.enums.TransportType;
+import com.koliexpress.tripservice.model.transport.Transport;
 import com.koliexpress.tripservice.validation.ValidationGroups;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
@@ -18,14 +20,14 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**
- * Base DTO for TripRequest
+ * Base Dto for TripRequest
  */
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public abstract class TripRequestDTO implements Serializable {
+public class TripRequestDto implements Serializable {
 
     @JsonProperty("traveler_id")
     @NotNull(message = "Traveler ID is required", groups = ValidationGroups.Create.class)
@@ -33,11 +35,11 @@ public abstract class TripRequestDTO implements Serializable {
 
     @NotNull(message = "Origin location is required", groups = ValidationGroups.Create.class)
     @Valid
-    private LocationRequestDTO origin;
+    private LocationRequestDto origin;
 
     @NotNull(message = "Destination location is required", groups = ValidationGroups.Create.class)
     @Valid
-    private LocationRequestDTO destination;
+    private LocationRequestDto destination;
 
     @JsonProperty("departure_date")
     @NotNull(message = "Departure date is required", groups = ValidationGroups.Create.class)
@@ -54,6 +56,13 @@ public abstract class TripRequestDTO implements Serializable {
             groups = ValidationGroups.Create.class
     )
     private LocalDateTime arrivalDate;
+
+    @NotNull(message = "Transport type is required")
+    @JsonProperty("transport_type")
+    private TransportType transportType;
+
+    @NotNull(message = "Transport details are required", groups = ValidationGroups.Create.class)
+    private TransportRequestDto transport;
 
     @JsonProperty("available_weight")
     @NotNull(message = "Available weight is required", groups = ValidationGroups.Create.class)

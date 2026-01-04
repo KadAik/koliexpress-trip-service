@@ -1,9 +1,9 @@
 package com.koliexpress.tripservice.controller;
 
 import com.koliexpress.tripservice.builder.dto.trip.FlightTripRequestDtoTestBuilder;
-import com.koliexpress.tripservice.dto.trip.FlightTripRequestDTO;
-import com.koliexpress.tripservice.dto.trip.TripRequestDTO;
-import com.koliexpress.tripservice.dto.trip.TripResponseDTO;
+import com.koliexpress.tripservice.dto.trip.FlightTripRequestDto;
+import com.koliexpress.tripservice.dto.trip.TripRequestDto;
+import com.koliexpress.tripservice.dto.trip.TripResponseDto;
 import com.koliexpress.tripservice.exceptions.InvalidArgumentException;
 import com.koliexpress.tripservice.exceptions.ResourceNotFoundException;
 import com.koliexpress.tripservice.service.TripService;
@@ -42,10 +42,10 @@ public class TripControllerTest {
     void testGetAllTrips_whenTripsExist_shouldReturnListOfTrips() throws Exception {
         // Arrange
 
-        TripResponseDTO dto_1 = TripResponseDTO
+        TripResponseDto dto_1 = TripResponseDto
                 .builder()
                 .build();
-        TripResponseDTO dto_2 = TripResponseDTO
+        TripResponseDto dto_2 = TripResponseDto
                 .builder()
                 .build();
 
@@ -78,7 +78,7 @@ public class TripControllerTest {
     void testGetTripById_whenTripExists_shouldReturnTrip() throws Exception {
         // Given
         String tripId = "123e4567-e89b-12d3-a456-426614174000";
-        TripResponseDTO dto = TripResponseDTO
+        TripResponseDto dto = TripResponseDto
                 .builder()
                 .id(UUID.fromString(tripId))
                 .build();
@@ -129,16 +129,16 @@ public class TripControllerTest {
     @Test
     void testCreateFlightTrip_whenRequestIsValid_shouldReturnCreatedTrip() throws Exception {
 
-        FlightTripRequestDTO request = FlightTripRequestDtoTestBuilder
+        FlightTripRequestDto request = FlightTripRequestDtoTestBuilder
                 .validFlightTrip();
 
-        TripResponseDTO response = TripResponseDTO
+        TripResponseDto response = TripResponseDto
                 .builder()
                 .availableWeight(request.getAvailableWeight())
                 .travelerId(request.getTravelerId())
                 .build();
 
-        given(tripService.createTrip(any(TripRequestDTO.class)))
+        given(tripService.createTrip(any(TripRequestDto.class)))
                 .willReturn(response);
 
         mvc.perform(post("/api/v1/trips/flights")
@@ -148,30 +148,30 @@ public class TripControllerTest {
                 .andExpect(jsonPath("$.traveler_id").value(request.getTravelerId().toString()))
                 .andExpect(jsonPath("$.busDetails").doesNotExist()); // Should be excluded by JsonInclude.NON_NULL
 
-        verify(tripService).createTrip(any(TripRequestDTO.class));
+        verify(tripService).createTrip(any(TripRequestDto.class));
     }
 
     @Test
     void testUpdateFlightTrip_whenTripExists_shouldReturnUpdatedTrip () throws Exception {
         // Given
         String tripId = "123e4567-e89b-12d3-a456-426614174000";
-        FlightTripRequestDTO requestDTO = FlightTripRequestDTO
+        FlightTripRequestDto requestDto = FlightTripRequestDto
                 .builder()
                 .build();
 
-        TripResponseDTO responseDTO = TripResponseDTO
+        TripResponseDto responseDto = TripResponseDto
                 .builder()
                 .id(UUID.fromString(tripId))
                 .build();
 
-        given(tripService.updateTrip(eq(tripId), any(FlightTripRequestDTO.class)))
-                .willReturn(responseDTO);
+        given(tripService.updateTrip(eq(tripId), any(FlightTripRequestDto.class)))
+                .willReturn(responseDto);
 
         // When & Then
         // Use MockMvc to simulate PUT /api/v1/trips/flight/{id} call
         mvc.perform(put("/api/v1/trips/flights/{id}", tripId)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(requestDTO)))
+                        .content(objectMapper.writeValueAsString(requestDto)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(tripId));
     }

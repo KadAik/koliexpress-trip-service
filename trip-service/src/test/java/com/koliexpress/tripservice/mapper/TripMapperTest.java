@@ -7,9 +7,9 @@ import com.koliexpress.tripservice.builder.dto.trip.FlightTripRequestDtoTestBuil
 import com.koliexpress.tripservice.builder.model.LocationTestBuilder;
 import com.koliexpress.tripservice.builder.model.TravelerTestBuilder;
 import com.koliexpress.tripservice.builder.model.TripTestBuilder;
-import com.koliexpress.tripservice.dto.trip.FlightTripRequestDTO;
-import com.koliexpress.tripservice.dto.trip.TripRequestDTO;
-import com.koliexpress.tripservice.dto.trip.TripResponseDTO;
+import com.koliexpress.tripservice.dto.trip.FlightTripRequestDto;
+import com.koliexpress.tripservice.dto.trip.TripRequestDto;
+import com.koliexpress.tripservice.dto.trip.TripResponseDto;
 import com.koliexpress.tripservice.enums.TransportType;
 import com.koliexpress.tripservice.enums.TransportVerificationStatus;
 import com.koliexpress.tripservice.enums.TripStatus;
@@ -65,7 +65,7 @@ class TripMapperTest {
 
     @ParameterizedTest(name = "Should map Trip with transport type {0} correctly")
     @MethodSource("transportTypeCases")
-    void testToResponseDTO_withDifferentTransportTypes_shouldSetCorrectTransportDetailsFields(
+    void testToResponseDto_withDifferentTransportTypes_shouldSetCorrectTransportDetailsFields(
             TransportType transport,
             Supplier<TripTestBuilder> tripBuilderSupplier,
             String expectedTransport
@@ -78,7 +78,7 @@ class TripMapperTest {
                 .build();
 
         // Act
-        TripResponseDTO result = tripMapper.toResponseDTO(trip);
+        TripResponseDto result = tripMapper.toResponseDto(trip);
 
         // Assert (common)
         assertThat(result).isNotNull();
@@ -107,10 +107,10 @@ class TripMapperTest {
 
 
     @Test
-    @DisplayName("Should map TripRequestDTO to Trip entity with DRAFT status")
-    void testToEntity_whenGivenTripRequestDTO_shouldMapToTripWithDraftStatus() {
+    @DisplayName("Should map TripRequestDto to Trip entity with DRAFT status")
+    void testToEntity_whenGivenTripRequestDto_shouldMapToTripWithDraftStatus() {
         // Arrange
-        FlightTripRequestDTO dto = FlightTripRequestDtoTestBuilder.validFlightTrip();
+        FlightTripRequestDto dto = FlightTripRequestDtoTestBuilder.validFlightTrip();
 
         // Act
         Trip result = tripMapper.toEntity(dto);
@@ -166,10 +166,10 @@ class TripMapperTest {
         );
     }
 
-    @ParameterizedTest(name = "Should map {0} TripRequestDTO to Trip entity with correct Transport subtype")
+    @ParameterizedTest(name = "Should map {0} TripRequestDto to Trip entity with correct Transport subtype")
     @MethodSource("tripTypeCases")
     void testToEntity_whenGivenAnyTripRequestDto_shouldMapPolymorphically(
-            TripRequestDTO requestDto,
+            TripRequestDto requestDto,
             TransportType expectedTransportType,
             Class<? extends Transport> expectedTransportClass,
             String testField
@@ -185,9 +185,9 @@ class TripMapperTest {
     }
 
     @Test
-    void testUpdateEntityFromDtoAndReturn_whenGivenFlightTripRequestDTO_shouldUpdateTripEntityCorrectly() {
+    void testUpdateEntityFromDtoAndReturn_whenGivenFlightTripRequestDto_shouldUpdateTripEntityCorrectly() {
         // Arrange
-        FlightTripRequestDTO dto = FlightTripRequestDtoTestBuilder
+        FlightTripRequestDto dto = FlightTripRequestDtoTestBuilder
                 .aFlightTripRequestDto()
                 .withAvailableWeight("50.0")
                 .withPricePerKg("20.0")

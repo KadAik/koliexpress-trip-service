@@ -1,8 +1,8 @@
 package com.koliexpress.tripservice.mapper.transport;
 
 
-import com.koliexpress.tripservice.dto.transport.BusTransportRequestDTO;
-import com.koliexpress.tripservice.dto.transport.BusTransportResponseDTO;
+import com.koliexpress.tripservice.dto.transport.BusTransportRequestDto;
+import com.koliexpress.tripservice.dto.transport.BusTransportResponseDto;
 import com.koliexpress.tripservice.model.transport.BusTransport;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
@@ -13,7 +13,7 @@ import org.mapstruct.ReportingPolicy;
 )
 public interface BusTransportMapper {
 
-    BusTransportResponseDTO toResponseDTO(BusTransport busTransport);
+    BusTransportResponseDto toResponseDto(BusTransport busTransport);
 
-    BusTransport toEntity(BusTransportRequestDTO busTransportRequestDTO);
+    BusTransport toEntity(BusTransportRequestDto busTransportRequestDto);
 }

@@ -2,8 +2,8 @@ package com.koliexpress.tripservice.dto.trip;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.koliexpress.tripservice.dto.LocationResponseDTO;
-import com.koliexpress.tripservice.dto.transport.TransportResponseDTO;
+import com.koliexpress.tripservice.dto.LocationResponseDto;
+import com.koliexpress.tripservice.dto.transport.TransportResponseDto;
 import com.koliexpress.tripservice.enums.TransportType;
 import com.koliexpress.tripservice.enums.TripStatus;
 import lombok.*;
@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**
- * DTO for {@link com.koliexpress.tripservice.model.Trip}
+ * Dto for {@link com.koliexpress.tripservice.model.Trip}
  */
 @Getter
 @Setter
@@ -22,14 +22,14 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class TripResponseDTO implements Serializable {
+public class TripResponseDto implements Serializable {
     UUID id;
 
     @JsonProperty(value = "traveler_id")
     UUID travelerId;
 
-    LocationResponseDTO origin;
-    LocationResponseDTO destination;
+    LocationResponseDto origin;
+    LocationResponseDto destination;
 
     @JsonProperty(value = "departure_date")
     LocalDateTime departureDate;
@@ -50,7 +50,7 @@ public class TripResponseDTO implements Serializable {
     TransportType transportType;
 
     @JsonProperty("transport_details")
-    TransportResponseDTO transportDetails;
+    TransportResponseDto transportDetails;
 
     TripStatus status;
     String notice;

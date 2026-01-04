@@ -1,7 +1,7 @@
 package com.koliexpress.tripservice.mapper.transport;
 
-import com.koliexpress.tripservice.dto.transport.CarTransportRequestDTO;
-import com.koliexpress.tripservice.dto.transport.CarTransportResponseDTO;
+import com.koliexpress.tripservice.dto.transport.CarTransportRequestDto;
+import com.koliexpress.tripservice.dto.transport.CarTransportResponseDto;
 import com.koliexpress.tripservice.model.transport.CarTransport;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
@@ -12,7 +12,7 @@ import org.mapstruct.ReportingPolicy;
 )
 public interface CarTransportMapper {
 
-    CarTransportResponseDTO toResponseDTO(CarTransport car);
+    CarTransportResponseDto toResponseDto(CarTransport car);
 
-    CarTransport toEntity(CarTransportRequestDTO car);
+    CarTransport toEntity(CarTransportRequestDto car);
 }

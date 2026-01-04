@@ -1,6 +1,6 @@
 package com.koliexpress.tripservice.builder.dto;
 
-import com.koliexpress.tripservice.dto.TravelerRequestDTO;
+import com.koliexpress.tripservice.dto.TravelerRequestDto;
 
 public class TravelerRequestDtoTestBuilder {
     private String firstName = "John";
@@ -35,8 +35,8 @@ public class TravelerRequestDtoTestBuilder {
         return this;
     }
 
-    public TravelerRequestDTO build() {
-        TravelerRequestDTO obj = new TravelerRequestDTO();
+    public TravelerRequestDto build() {
+        TravelerRequestDto obj = new TravelerRequestDto();
         obj.setFirstName(firstName);
         obj.setLastName(lastName);
         obj.setEmail(email);
@@ -45,60 +45,60 @@ public class TravelerRequestDtoTestBuilder {
     }
 
     // Convenience methods for test scenarios
-    public static TravelerRequestDTO validTraveler() {
+    public static TravelerRequestDto validTraveler() {
         return aTravelerRequestDto().build();
     }
 
-    public static TravelerRequestDTO withInvalidEmail() {
+    public static TravelerRequestDto withInvalidEmail() {
         return aTravelerRequestDto()
                 .withEmail("invalid-email")  // Invalid email format
                 .build();
     }
 
-    public static TravelerRequestDTO withNullFirstName() {
+    public static TravelerRequestDto withNullFirstName() {
         return aTravelerRequestDto()
                 .withFirstName(null)
                 .build();
     }
 
-    public static TravelerRequestDTO withNullLastName() {
+    public static TravelerRequestDto withNullLastName() {
         return aTravelerRequestDto()
                 .withLastName(null)
                 .build();
     }
 
-    public static TravelerRequestDTO withNullEmail() {
+    public static TravelerRequestDto withNullEmail() {
         return aTravelerRequestDto()
                 .withEmail(null)
                 .build();
     }
 
-    public static TravelerRequestDTO withNullPhoneNumber() {
+    public static TravelerRequestDto withNullPhoneNumber() {
         return aTravelerRequestDto()
                 .withPhoneNumber(null)
                 .build();
     }
 
-    public static TravelerRequestDTO withEmptyFirstName() {
+    public static TravelerRequestDto withEmptyFirstName() {
         return aTravelerRequestDto()
                 .withFirstName("")
                 .build();
     }
 
-    public static TravelerRequestDTO withEmptyLastName() {
+    public static TravelerRequestDto withEmptyLastName() {
         return aTravelerRequestDto()
                 .withLastName("")
                 .build();
     }
 
-    public static TravelerRequestDTO withEmptyPhoneNumber() {
+    public static TravelerRequestDto withEmptyPhoneNumber() {
         return aTravelerRequestDto()
                 .withPhoneNumber("")
                 .build();
     }
 
     // Example real-world travelers
-    public static TravelerRequestDTO janeSmith() {
+    public static TravelerRequestDto janeSmith() {
         return aTravelerRequestDto()
                 .withFirstName("Jane")
                 .withLastName("Smith")
@@ -107,7 +107,7 @@ public class TravelerRequestDtoTestBuilder {
                 .build();
     }
 
-    public static TravelerRequestDTO bobJohnson() {
+    public static TravelerRequestDto bobJohnson() {
         return aTravelerRequestDto()
                 .withFirstName("Bob")
                 .withLastName("Johnson")
@@ -116,7 +116,7 @@ public class TravelerRequestDtoTestBuilder {
                 .build();
     }
 
-    public static TravelerRequestDTO internationalTraveler() {
+    public static TravelerRequestDto internationalTraveler() {
         return aTravelerRequestDto()
                 .withFirstName("Maria")
                 .withLastName("Garcia")
@@ -126,7 +126,7 @@ public class TravelerRequestDtoTestBuilder {
     }
 
     // Edge case scenarios
-    public static TravelerRequestDTO withSpecialCharactersInName() {
+    public static TravelerRequestDto withSpecialCharactersInName() {
         return aTravelerRequestDto()
                 .withFirstName("Jean-Pierre")
                 .withLastName("O'Connor")
@@ -135,7 +135,7 @@ public class TravelerRequestDtoTestBuilder {
                 .build();
     }
 
-    public static TravelerRequestDTO withLongPhoneNumber() {
+    public static TravelerRequestDto withLongPhoneNumber() {
         return aTravelerRequestDto()
                 .withFirstName("Alex")
                 .withLastName("Chen")
@@ -144,7 +144,7 @@ public class TravelerRequestDtoTestBuilder {
                 .build();
     }
 
-    public static TravelerRequestDTO withCorporateEmail() {
+    public static TravelerRequestDto withCorporateEmail() {
         return aTravelerRequestDto()
                 .withFirstName("Michael")
                 .withLastName("Williams")

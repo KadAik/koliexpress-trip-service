@@ -2,9 +2,9 @@ package com.koliexpress.tripservice.builder.dto.trip;
 
 import com.koliexpress.tripservice.builder.dto.LocationRequestDtoTestBuilder;
 import com.koliexpress.tripservice.builder.dto.transport.BusTransportRequestDtoTestBuilder;
-import com.koliexpress.tripservice.dto.LocationRequestDTO;
-import com.koliexpress.tripservice.dto.transport.BusTransportRequestDTO;
-import com.koliexpress.tripservice.dto.trip.BusTripRequestDTO;
+import com.koliexpress.tripservice.dto.LocationRequestDto;
+import com.koliexpress.tripservice.dto.transport.BusTransportRequestDto;
+import com.koliexpress.tripservice.dto.trip.BusTripRequestDto;
 import com.koliexpress.tripservice.enums.TransportType;
 
 import java.math.BigDecimal;
@@ -13,8 +13,8 @@ import java.util.UUID;
 
 public class BusTripRequestDtoTestBuilder {
     private UUID travelerId = UUID.randomUUID();
-    private LocationRequestDTO origin;
-    private LocationRequestDTO destination;
+    private LocationRequestDto origin;
+    private LocationRequestDto destination;
     private LocalDateTime departureDate = LocalDateTime.now().plusDays(1);
     private LocalDateTime arrivalDate = LocalDateTime.now().plusDays(1).plusHours(5);
     private BigDecimal availableWeight = new BigDecimal("20.00");
@@ -22,7 +22,7 @@ public class BusTripRequestDtoTestBuilder {
     private BigDecimal priceAsked = new BigDecimal("50.00");
     private TransportType transportType = TransportType.BUS;
     private String notice = "Flexible with pickup/dropoff times";
-    private BusTransportRequestDTO busDetails;
+    private BusTransportRequestDto busDetails;
 
     private BusTripRequestDtoTestBuilder() {
         // Initialize with default test builders
@@ -54,12 +54,12 @@ public class BusTripRequestDtoTestBuilder {
         return this;
     }
 
-    public BusTripRequestDtoTestBuilder withOrigin(LocationRequestDTO origin) {
+    public BusTripRequestDtoTestBuilder withOrigin(LocationRequestDto origin) {
         this.origin = origin;
         return this;
     }
 
-    public BusTripRequestDtoTestBuilder withDestination(LocationRequestDTO destination) {
+    public BusTripRequestDtoTestBuilder withDestination(LocationRequestDto destination) {
         this.destination = destination;
         return this;
     }
@@ -99,7 +99,7 @@ public class BusTripRequestDtoTestBuilder {
         return this;
     }
 
-    public BusTripRequestDtoTestBuilder withBusDetails(BusTransportRequestDTO busDetails) {
+    public BusTripRequestDtoTestBuilder withBusDetails(BusTransportRequestDto busDetails) {
         this.busDetails = busDetails;
         return this;
     }
@@ -120,8 +120,8 @@ public class BusTripRequestDtoTestBuilder {
         return this;
     }
 
-    public BusTripRequestDTO build() {
-        return BusTripRequestDTO.builder()
+    public BusTripRequestDto build() {
+        return BusTripRequestDto.builder()
                 .travelerId(travelerId)
                 .origin(origin)
                 .destination(destination)
@@ -137,67 +137,67 @@ public class BusTripRequestDtoTestBuilder {
     }
 
     // Convenience methods for common test scenarios
-    public static BusTripRequestDTO validBusTrip() {
+    public static BusTripRequestDto validBusTrip() {
         return aBusTripRequestDto().build();
     }
 
-    public static BusTripRequestDTO withNullBusDetails() {
+    public static BusTripRequestDto withNullBusDetails() {
         return aBusTripRequestDto()
                 .withBusDetails(null)
                 .build();
     }
 
-    public static BusTripRequestDTO withInvalidDates() {
+    public static BusTripRequestDto withInvalidDates() {
         return aBusTripRequestDto()
                 .withDepartureDate(LocalDateTime.now().plusDays(2))
                 .withArrivalDate(LocalDateTime.now().plusDays(1))  // Arrival before departure
                 .build();
     }
 
-    public static BusTripRequestDTO withPastDepartureDate() {
+    public static BusTripRequestDto withPastDepartureDate() {
         return aBusTripRequestDto()
                 .withDepartureDate(LocalDateTime.now().minusDays(1))  // Past date
                 .build();
     }
 
-    public static BusTripRequestDTO withNullOrigin() {
+    public static BusTripRequestDto withNullOrigin() {
         return aBusTripRequestDto()
                 .withOrigin(null)
                 .build();
     }
 
-    public static BusTripRequestDTO withNullDestination() {
+    public static BusTripRequestDto withNullDestination() {
         return aBusTripRequestDto()
                 .withDestination(null)
                 .build();
     }
 
-    public static BusTripRequestDTO withZeroAvailableWeight() {
+    public static BusTripRequestDto withZeroAvailableWeight() {
         return aBusTripRequestDto()
                 .withAvailableWeight(BigDecimal.ZERO)  // Should fail @Positive validation
                 .build();
     }
 
-    public static BusTripRequestDTO withNegativePrice() {
+    public static BusTripRequestDto withNegativePrice() {
         return aBusTripRequestDto()
                 .withPricePerKg(new BigDecimal("-1.00"))  // Should fail @Positive validation
                 .build();
     }
 
-    public static BusTripRequestDTO withNullTravelerId() {
+    public static BusTripRequestDto withNullTravelerId() {
         return aBusTripRequestDto()
                 .withTravelerId(null)
                 .build();
     }
 
-    public static BusTripRequestDTO withNullTransportType() {
+    public static BusTripRequestDto withNullTransportType() {
         return aBusTripRequestDto()
                 .withTransportType(null)
                 .build();
     }
 
     // Real-world bus trip scenarios
-    public static BusTripRequestDTO megabusTrip() {
+    public static BusTripRequestDto megabusTrip() {
         return aBusTripRequestDto()
                 .withTravelerId(UUID.fromString("123e4567-e89b-12d3-a456-426614174000"))
                 .withOrigin(LocationRequestDtoTestBuilder.aLocationRequestDto()
@@ -224,7 +224,7 @@ public class BusTripRequestDtoTestBuilder {
                 .build();
     }
 
-    public static BusTripRequestDTO flixbusTrip() {
+    public static BusTripRequestDto flixbusTrip() {
         return aBusTripRequestDto()
                 .withTravelerId(UUID.fromString("223e4567-e89b-12d3-a456-426614174001"))
                 .withOrigin(LocationRequestDtoTestBuilder.aLocationRequestDto()
@@ -251,7 +251,7 @@ public class BusTripRequestDtoTestBuilder {
                 .build();
     }
 
-    public static BusTripRequestDTO internationalBusTrip() {
+    public static BusTripRequestDto internationalBusTrip() {
         return aBusTripRequestDto()
                 .withTravelerId(UUID.fromString("323e4567-e89b-12d3-a456-426614174002"))
                 .withOrigin(LocationRequestDtoTestBuilder.aLocationRequestDto()
@@ -279,7 +279,7 @@ public class BusTripRequestDtoTestBuilder {
                 .build();
     }
 
-    public static BusTripRequestDTO airportShuttleTrip() {
+    public static BusTripRequestDto airportShuttleTrip() {
         return aBusTripRequestDto()
                 .withTravelerId(UUID.fromString("423e4567-e89b-12d3-a456-426614174003"))
                 .withAvailableWeight(new BigDecimal("10.00"))
@@ -292,7 +292,7 @@ public class BusTripRequestDtoTestBuilder {
                 .build();
     }
 
-    public static BusTripRequestDTO localTransitTrip() {
+    public static BusTripRequestDto localTransitTrip() {
         return aBusTripRequestDto()
                 .withTravelerId(UUID.fromString("523e4567-e89b-12d3-a456-426614174004"))
                 .withAvailableWeight(new BigDecimal("5.00"))
@@ -305,7 +305,7 @@ public class BusTripRequestDtoTestBuilder {
                 .build();
     }
 
-    public static BusTripRequestDTO longDistanceBusTrip() {
+    public static BusTripRequestDto longDistanceBusTrip() {
         return aBusTripRequestDto()
                 .withTravelerId(UUID.fromString("623e4567-e89b-12d3-a456-426614174005"))
                 .withOrigin(LocationRequestDtoTestBuilder.aLocationRequestDto()

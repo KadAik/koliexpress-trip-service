@@ -9,7 +9,6 @@ import com.koliexpress.tripservice.mapper.transport.FlightTransportMapper;
 import com.koliexpress.tripservice.mapper.transport.TransportMapper;
 import com.koliexpress.tripservice.model.Trip;
 import com.koliexpress.tripservice.model.transport.*;
-import org.hibernate.Hibernate;
 import org.mapstruct.*;
 
 /**
@@ -31,84 +30,62 @@ import org.mapstruct.*;
 )
 public interface TripMapper {
 
-    // ============================================
-    // RESPONSE MAPPING (Entity → DTO)
-    // ============================================
     /**
-     * Trip Entity → TripResponseDTO
+     * Trip Entity → TripResponseDto
      */
     @Mapping(target = "travelerId", source = "traveler.id")
     @Mapping(target = "origin", source = "origin")
     @Mapping(target = "destination", source = "destination")
     @Mapping(target = "transportDetails", source = "transport")
-    TripResponseDTO toResponseDTO(Trip trip);
-
-    // ============================================
-    // REQUEST MAPPING (DTO → Entity)
-    // ============================================
+    TripResponseDto toResponseDto(Trip entity);
 
     /**
-     * TripRequestDTO → Trip Entity
+     * TripRequestDto → Trip Entity
      * Ignored fields are handled in the Service layer or auto-generated
      */
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "traveler", ignore = true)
-    @Mapping(target = "transport", expression = "java(mapTransport(dto))")
+    @Mapping(target = "transport", source = "transport")
     @Mapping(target = "status", constant = "DRAFT")
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "origin", source = "origin")
     @Mapping(target = "destination", source = "destination")
-    Trip toEntity(TripRequestDTO dto);
-
-    default Transport mapTransport(TripRequestDTO dto) {
-        return switch (dto) {
-            case FlightTripRequestDTO flightDto ->
-                    map(flightDto.getFlightDetails());
-            case BusTripRequestDTO busDto ->
-                    map(busDto.getBusDetails());
-            case CarTripRequestDTO carDto ->
-                    map(carDto.getCarDetails());
-            default ->
-                    throw new IllegalArgumentException(
-                            "Unknown TripRequestDTO type: " + dto.getClass().getName()
-                    );
-        };
-    }
-
+    @Mapping(target = "transportType", ignore = true) // handled in service
+    Trip toEntity(TripRequestDto dto);
 
     /**
-     * TripRequestDTO → Trip Entity
-     * Update existing Trip entity with values from DTO
+     * TripRequestDto → Trip Entity
+     * Update existing Trip entity with values from Dto
      */
 
     @Mapping(target = "origin", ignore = true)
     @Mapping(target = "destination", ignore = true)
-    void updateEntityFromDTO(FlightTripRequestDTO dto, @MappingTarget Trip trip);
+    void updateEntityFromDto(FlightTripRequestDto dto, @MappingTarget Trip trip);
 
     @Mapping(target = "origin", ignore = true)
     @Mapping(target = "destination", ignore = true)
-    void updateEntityFromDTO(BusTripRequestDTO dto, @MappingTarget Trip trip);
+    void updateEntityFromDto(BusTripRequestDto dto, @MappingTarget Trip trip);
 
     @Mapping(target = "origin", ignore = true)
     @Mapping(target = "destination", ignore = true)
-    void updateEntityFromDTO(CarTripRequestDTO dto, @MappingTarget Trip trip);
+    void updateEntityFromDto(CarTripRequestDto dto, @MappingTarget Trip trip);
 
     @Mapping(target = "origin", ignore = true)
     @Mapping(target = "destination", ignore = true)
-    Trip updateEntityFromDtoAndReturn(FlightTripRequestDTO dto, @MappingTarget Trip trip, @Context LocationMapper locationMapper);
+    Trip updateEntityFromDtoAndReturn(FlightTripRequestDto dto, @MappingTarget Trip trip, @Context LocationMapper locationMapper);
 
     @Mapping(target = "origin", ignore = true)
     @Mapping(target = "destination", ignore = true)
-    Trip updateEntityFromDtoAndReturn(BusTripRequestDTO dto, @MappingTarget Trip trip, @Context LocationMapper locationMapper);
+    Trip updateEntityFromDtoAndReturn(BusTripRequestDto dto, @MappingTarget Trip trip, @Context LocationMapper locationMapper);
 
     @Mapping(target = "origin", ignore = true)
     @Mapping(target = "destination", ignore = true)
-    Trip updateEntityFromDtoAndReturn(CarTripRequestDTO dto, @MappingTarget Trip trip, @Context LocationMapper locationMapper);
+    Trip updateEntityFromDtoAndReturn(CarTripRequestDto dto, @MappingTarget Trip trip, @Context LocationMapper locationMapper);
 
     @AfterMapping
     default void updateLocations(
-            FlightTripRequestDTO dto,
+            FlightTripRequestDto dto,
             @MappingTarget Trip trip,
             @Context LocationMapper locationMapper
     ) {
@@ -117,7 +94,7 @@ public interface TripMapper {
 
     @AfterMapping
     default void updateLocations(
-            BusTripRequestDTO dto,
+            BusTripRequestDto dto,
             @MappingTarget Trip trip,
             @Context LocationMapper locationMapper
     ) {
@@ -126,7 +103,7 @@ public interface TripMapper {
 
     @AfterMapping
     default void updateLocations(
-            CarTripRequestDTO dto,
+            CarTripRequestDto dto,
             @MappingTarget Trip trip,
             @Context LocationMapper locationMapper
     ) {
@@ -134,7 +111,7 @@ public interface TripMapper {
     }
 
     private void updateLocationsInternal(
-            TripRequestDTO dto,
+            TripRequestDto dto,
             Trip trip,
             LocationMapper locationMapper
     ) {
@@ -153,30 +130,30 @@ public interface TripMapper {
     // POLYMORPHIC TRANSPORT MAPPING
     // ============================================
 
-    default FlightTransportResponseDTO mapFlightDetails(Trip trip) {
+    default FlightTransportResponseDto mapFlightDetails(Trip trip) {
         return trip.getTransport().getType() == TransportType.PLANE
                 ? map((FlightTransport) trip.getTransport())
                 : null;
     }
 
-    default BusTransportResponseDTO mapBusDetails(Trip trip) {
+    default BusTransportResponseDto mapBusDetails(Trip trip) {
         return trip.getTransport().getType() == TransportType.BUS
                 ? map((BusTransport) trip.getTransport())
                 : null;
     }
 
-    default CarTransportResponseDTO mapCarDetails(Trip trip) {
+    default CarTransportResponseDto mapCarDetails(Trip trip) {
         return trip.getTransport().getType() == TransportType.CAR
                 ? map((CarTransport) trip.getTransport())
                 : null;
     }
 
 
-    FlightTransportResponseDTO map(FlightTransport flightTransport);
-    BusTransportResponseDTO map(BusTransport busTransport);
-    CarTransportResponseDTO map(CarTransport carTransport);
+    FlightTransportResponseDto map(FlightTransport flightTransport);
+    BusTransportResponseDto map(BusTransport busTransport);
+    CarTransportResponseDto map(CarTransport carTransport);
 
-    FlightTransport map(FlightTransportRequestDTO flightTransportDto);
-    BusTransport map(BusTransportRequestDTO busTransportDto);
-    CarTransport map(CarTransportRequestDTO carTransportDto);
+    FlightTransport map(FlightTransportRequestDto flightTransportDto);
+    BusTransport map(BusTransportRequestDto busTransportDto);
+    CarTransport map(CarTransportRequestDto carTransportDto);
 }

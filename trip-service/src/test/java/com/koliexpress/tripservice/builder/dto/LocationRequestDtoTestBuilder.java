@@ -1,6 +1,6 @@
 package com.koliexpress.tripservice.builder.dto;
 
-import com.koliexpress.tripservice.dto.LocationRequestDTO;
+import com.koliexpress.tripservice.dto.LocationRequestDto;
 
 import java.math.BigDecimal;
 
@@ -53,46 +53,46 @@ public class LocationRequestDtoTestBuilder {
         return this;
     }
 
-    public LocationRequestDTO build() {
-        return new LocationRequestDTO(name, city, country, latitude, longitude);
+    public LocationRequestDto build() {
+        return new LocationRequestDto(name, city, country, latitude, longitude);
     }
 
     // Convenience methods for test scenarios
-    public static LocationRequestDTO validLocation() {
+    public static LocationRequestDto validLocation() {
         return aLocationRequestDto().build();
     }
 
-    public static LocationRequestDTO withInvalidLatitude() {
+    public static LocationRequestDto withInvalidLatitude() {
         return aLocationRequestDto()
                 .withLatitude(new BigDecimal("91.0"))  // Exceeds @Max(90)
                 .build();
     }
 
-    public static LocationRequestDTO withInvalidLongitude() {
+    public static LocationRequestDto withInvalidLongitude() {
         return aLocationRequestDto()
                 .withLongitude(new BigDecimal("181.0"))  // Exceeds @Max(180)
                 .build();
     }
 
-    public static LocationRequestDTO withNullName() {
+    public static LocationRequestDto withNullName() {
         return aLocationRequestDto()
                 .withName(null)
                 .build();
     }
 
-    public static LocationRequestDTO withEmptyCity() {
+    public static LocationRequestDto withEmptyCity() {
         return aLocationRequestDto()
                 .withCity("")
                 .build();
     }
 
-    public static LocationRequestDTO withEmptyCountry() {
+    public static LocationRequestDto withEmptyCountry() {
         return aLocationRequestDto()
                 .withCountry(" ")
                 .build();  // Just whitespace
     }
 
-    public static LocationRequestDTO londonLocation() {
+    public static LocationRequestDto londonLocation() {
         return aLocationRequestDto()
                 .withName("London Eye")
                 .withCity("London")
@@ -102,7 +102,7 @@ public class LocationRequestDtoTestBuilder {
                 .build();
     }
 
-    public static LocationRequestDTO tokyoLocation() {
+    public static LocationRequestDto tokyoLocation() {
         return aLocationRequestDto()
                 .withName("Tokyo Tower")
                 .withCity("Tokyo")

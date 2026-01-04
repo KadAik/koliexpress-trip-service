@@ -13,7 +13,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class CarTransportResponseDTO extends TransportResponseDTO{
+public class CarTransportResponseDto extends TransportResponseDto {
 
     UUID id;
 

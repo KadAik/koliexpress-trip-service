@@ -1,6 +1,8 @@
 package com.koliexpress.tripservice.dto.transport;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.koliexpress.tripservice.enums.TransportType;
 import com.koliexpress.tripservice.model.transport.Transport;
 import com.koliexpress.tripservice.validation.ValidationGroups;
@@ -12,14 +14,24 @@ import lombok.*;
 import java.io.Serializable;
 
 /**
- * DTO for {@link Transport}
+ * Dto for {@link Transport}
  */
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-public class TransportRequestDTO implements Serializable {
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        include = JsonTypeInfo.As.EXISTING_PROPERTY,
+        property = "transport_type"
+)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = FlightTransportRequestDto.class, name = "PLANE"),
+        @JsonSubTypes.Type(value = BusTransportRequestDto.class, name = "BUS"),
+        @JsonSubTypes.Type(value = CarTransportRequestDto.class, name = "CAR")
+})
+public abstract class TransportRequestDto implements Serializable {
 
     @NotNull(message = "Transport type is required", groups = ValidationGroups.Create.class)
     @JsonProperty("transport_type")

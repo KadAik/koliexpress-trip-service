@@ -2,17 +2,14 @@ package com.koliexpress.tripservice.dto.transport;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.koliexpress.tripservice.enums.TransportType;
 import lombok.*;
-
-import java.util.UUID;
 
 @Getter
 @Setter
 //@AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class FlightTransportResponseDTO extends TransportResponseDTO {
+public class FlightTransportResponseDto extends TransportResponseDto {
 
     @JsonProperty("flight_number")
     String flightNumber;

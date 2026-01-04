@@ -10,7 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class CarTransportRequestDTO extends TransportRequestDTO {
+public class CarTransportRequestDto extends TransportRequestDto {
 
     @NotBlank(
             message = "Vehicle make is required",

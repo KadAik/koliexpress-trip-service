@@ -1,6 +1,6 @@
 package com.koliexpress.tripservice.builder.dto.transport;
 
-import com.koliexpress.tripservice.dto.transport.CarTransportRequestDTO;
+import com.koliexpress.tripservice.dto.transport.CarTransportRequestDto;
 
 public class CarTransportRequestDtoTestBuilder {
     private String providerName = "Enterprise Rent-A-Car";
@@ -59,8 +59,8 @@ public class CarTransportRequestDtoTestBuilder {
         return this;
     }
 
-    public CarTransportRequestDTO build() {
-        CarTransportRequestDTO dto = new CarTransportRequestDTO();
+    public CarTransportRequestDto build() {
+        CarTransportRequestDto dto = new CarTransportRequestDto();
         dto.setProviderName(providerName);
         dto.setReferenceNumber(referenceNumber);
         dto.setAdditionalInfo(additionalInfo);
@@ -73,23 +73,23 @@ public class CarTransportRequestDtoTestBuilder {
     }
 
     // Convenience methods for common test scenarios
-    public static CarTransportRequestDTO validCarTransport() {
+    public static CarTransportRequestDto validCarTransport() {
         return aCarTransportRequestDto().build();
     }
 
-    public static CarTransportRequestDTO withEmptyVehicleMake() {
+    public static CarTransportRequestDto withEmptyVehicleMake() {
         return aCarTransportRequestDto()
                 .withVehicleMake("")
                 .build();
     }
 
-    public static CarTransportRequestDTO withEmptyLicensePlate() {
+    public static CarTransportRequestDto withEmptyLicensePlate() {
         return aCarTransportRequestDto()
                 .withLicensePlate("")
                 .build();
     }
 
-    public static CarTransportRequestDTO luxuryCar() {
+    public static CarTransportRequestDto luxuryCar() {
         return aCarTransportRequestDto()
                 .withProviderName("Hertz Gold")
                 .withVehicleMake("Mercedes-Benz")
@@ -102,7 +102,7 @@ public class CarTransportRequestDtoTestBuilder {
                 .build();
     }
 
-    public static CarTransportRequestDTO electricVehicle() {
+    public static CarTransportRequestDto electricVehicle() {
         return aCarTransportRequestDto()
                 .withProviderName("Tesla Rental")
                 .withVehicleMake("Tesla")
@@ -115,7 +115,7 @@ public class CarTransportRequestDtoTestBuilder {
                 .build();
     }
 
-    public static CarTransportRequestDTO suvVehicle() {
+    public static CarTransportRequestDto suvVehicle() {
         return aCarTransportRequestDto()
                 .withProviderName("Avis Premium")
                 .withVehicleMake("Ford")
@@ -128,7 +128,7 @@ public class CarTransportRequestDtoTestBuilder {
                 .build();
     }
 
-    public static CarTransportRequestDTO vintageCar() {
+    public static CarTransportRequestDto vintageCar() {
         return aCarTransportRequestDto()
                 .withProviderName("Classic Car Rentals")
                 .withVehicleMake("Chevrolet")

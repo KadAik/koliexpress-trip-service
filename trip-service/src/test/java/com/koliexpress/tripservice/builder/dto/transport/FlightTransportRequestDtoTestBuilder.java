@@ -1,6 +1,6 @@
 package com.koliexpress.tripservice.builder.dto.transport;
 
-import com.koliexpress.tripservice.dto.transport.FlightTransportRequestDTO;
+import com.koliexpress.tripservice.dto.transport.FlightTransportRequestDto;
 
 public class FlightTransportRequestDtoTestBuilder {
     private String providerName = "American Airlines";
@@ -65,8 +65,8 @@ public class FlightTransportRequestDtoTestBuilder {
         return this;
     }
 
-    public FlightTransportRequestDTO build() {
-        FlightTransportRequestDTO dto = new FlightTransportRequestDTO();
+    public FlightTransportRequestDto build() {
+        FlightTransportRequestDto dto = new FlightTransportRequestDto();
         dto.setProviderName(providerName);
         dto.setReferenceNumber(referenceNumber);
         dto.setAdditionalInfo(additionalInfo);
@@ -80,23 +80,23 @@ public class FlightTransportRequestDtoTestBuilder {
     }
 
     // Convenience methods for common test scenarios
-    public static FlightTransportRequestDTO validFlightTransport() {
+    public static FlightTransportRequestDto validFlightTransport() {
         return aFlightTransportRequestDto().build();
     }
 
-    public static FlightTransportRequestDTO withEmptyProviderName() {
+    public static FlightTransportRequestDto withEmptyProviderName() {
         return aFlightTransportRequestDto()
                 .withProviderName("")
                 .build();
     }
 
-    public static FlightTransportRequestDTO withInvalidFlightNumber() {
+    public static FlightTransportRequestDto withInvalidFlightNumber() {
         return aFlightTransportRequestDto()
                 .withFlightNumber("123AA")
                 .build();
     }
 
-    public static FlightTransportRequestDTO domesticFlight() {
+    public static FlightTransportRequestDto domesticFlight() {
         return aFlightTransportRequestDto()
                 .withProviderName("Delta Airlines")
                 .withFlightNumber("DL456")
@@ -109,7 +109,7 @@ public class FlightTransportRequestDtoTestBuilder {
                 .build();
     }
 
-    public static FlightTransportRequestDTO internationalFlight() {
+    public static FlightTransportRequestDto internationalFlight() {
         return aFlightTransportRequestDto()
                 .withProviderName("British Airways")
                 .withFlightNumber("BA789")
@@ -123,7 +123,7 @@ public class FlightTransportRequestDtoTestBuilder {
                 .build();
     }
 
-    public static FlightTransportRequestDTO longHaulFlight() {
+    public static FlightTransportRequestDto longHaulFlight() {
         return aFlightTransportRequestDto()
                 .withProviderName("Singapore Airlines")
                 .withFlightNumber("SQ123")

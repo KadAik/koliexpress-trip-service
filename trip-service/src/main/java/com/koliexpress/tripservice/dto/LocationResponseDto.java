@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Value
-public class LocationResponseDTO implements Serializable {
+public class LocationResponseDto implements Serializable {
     String name;
     String city;
     String country;

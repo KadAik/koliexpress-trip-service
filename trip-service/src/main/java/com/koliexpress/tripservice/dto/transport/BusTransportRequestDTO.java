@@ -11,7 +11,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class BusTransportRequestDTO extends TransportRequestDTO {
+public class BusTransportRequestDto extends TransportRequestDto {
 
     @NotBlank(
             message = "Bus company is required",

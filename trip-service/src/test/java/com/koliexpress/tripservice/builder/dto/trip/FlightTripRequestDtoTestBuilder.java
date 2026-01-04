@@ -2,9 +2,9 @@ package com.koliexpress.tripservice.builder.dto.trip;
 
 import com.koliexpress.tripservice.builder.dto.LocationRequestDtoTestBuilder;
 import com.koliexpress.tripservice.builder.dto.transport.FlightTransportRequestDtoTestBuilder;
-import com.koliexpress.tripservice.dto.LocationRequestDTO;
-import com.koliexpress.tripservice.dto.transport.FlightTransportRequestDTO;
-import com.koliexpress.tripservice.dto.trip.FlightTripRequestDTO;
+import com.koliexpress.tripservice.dto.LocationRequestDto;
+import com.koliexpress.tripservice.dto.transport.FlightTransportRequestDto;
+import com.koliexpress.tripservice.dto.trip.FlightTripRequestDto;
 import com.koliexpress.tripservice.enums.TransportType;
 
 import java.math.BigDecimal;
@@ -13,8 +13,8 @@ import java.util.UUID;
 
 public class FlightTripRequestDtoTestBuilder {
     private UUID travelerId = UUID.randomUUID();
-    private LocationRequestDTO origin;
-    private LocationRequestDTO destination;
+    private LocationRequestDto origin;
+    private LocationRequestDto destination;
     private LocalDateTime departureDate = LocalDateTime.now().plusDays(1);
     private LocalDateTime arrivalDate = LocalDateTime.now().plusDays(1).plusHours(6);
     private BigDecimal availableWeight = new BigDecimal("23.00");
@@ -22,7 +22,7 @@ public class FlightTripRequestDtoTestBuilder {
     private BigDecimal priceAsked = new BigDecimal("80.50");
     private TransportType transportType = TransportType.PLANE;
     private String notice = "Carry-on size restrictions apply";
-    private FlightTransportRequestDTO flightDetails;
+    private FlightTransportRequestDto flightDetails;
 
     private FlightTripRequestDtoTestBuilder() {
         // Initialize with default test builders
@@ -54,12 +54,12 @@ public class FlightTripRequestDtoTestBuilder {
         return this;
     }
 
-    public FlightTripRequestDtoTestBuilder withOrigin(LocationRequestDTO origin) {
+    public FlightTripRequestDtoTestBuilder withOrigin(LocationRequestDto origin) {
         this.origin = origin;
         return this;
     }
 
-    public FlightTripRequestDtoTestBuilder withDestination(LocationRequestDTO destination) {
+    public FlightTripRequestDtoTestBuilder withDestination(LocationRequestDto destination) {
         this.destination = destination;
         return this;
     }
@@ -99,7 +99,7 @@ public class FlightTripRequestDtoTestBuilder {
         return this;
     }
 
-    public FlightTripRequestDtoTestBuilder withFlightDetails(FlightTransportRequestDTO flightDetails) {
+    public FlightTripRequestDtoTestBuilder withFlightDetails(FlightTransportRequestDto flightDetails) {
         this.flightDetails = flightDetails;
         return this;
     }
@@ -120,8 +120,8 @@ public class FlightTripRequestDtoTestBuilder {
         return this;
     }
 
-    public FlightTripRequestDTO build() {
-        return FlightTripRequestDTO.builder()
+    public FlightTripRequestDto build() {
+        return FlightTripRequestDto.builder()
                 .travelerId(travelerId)
                 .origin(origin)
                 .destination(destination)
@@ -137,49 +137,49 @@ public class FlightTripRequestDtoTestBuilder {
     }
 
     // Convenience methods for common test scenarios
-    public static FlightTripRequestDTO validFlightTrip() {
+    public static FlightTripRequestDto validFlightTrip() {
         return aFlightTripRequestDto().build();
     }
 
-    public static FlightTripRequestDTO withNullFlightDetails() {
+    public static FlightTripRequestDto withNullFlightDetails() {
         return aFlightTripRequestDto()
                 .withFlightDetails(null)
                 .build();
     }
 
-    public static FlightTripRequestDTO withInvalidDates() {
+    public static FlightTripRequestDto withInvalidDates() {
         return aFlightTripRequestDto()
                 .withDepartureDate(LocalDateTime.now().plusDays(2))
                 .withArrivalDate(LocalDateTime.now().plusDays(1))  // Arrival before departure
                 .build();
     }
 
-    public static FlightTripRequestDTO withPastDepartureDate() {
+    public static FlightTripRequestDto withPastDepartureDate() {
         return aFlightTripRequestDto()
                 .withDepartureDate(LocalDateTime.now().minusHours(1))  // Past date
                 .build();
     }
 
-    public static FlightTripRequestDTO withZeroAvailableWeight() {
+    public static FlightTripRequestDto withZeroAvailableWeight() {
         return aFlightTripRequestDto()
                 .withAvailableWeight(BigDecimal.ZERO)  // Should fail @Positive validation
                 .build();
     }
 
-    public static FlightTripRequestDTO withNegativePrice() {
+    public static FlightTripRequestDto withNegativePrice() {
         return aFlightTripRequestDto()
                 .withPricePerKg(new BigDecimal("-1.00"))  // Should fail @Positive validation
                 .build();
     }
 
-    public static FlightTripRequestDTO withNullTravelerId() {
+    public static FlightTripRequestDto withNullTravelerId() {
         return aFlightTripRequestDto()
                 .withTravelerId(null)
                 .build();
     }
 
     // Real-world flight trip scenarios
-    public static FlightTripRequestDTO domesticFlightTrip() {
+    public static FlightTripRequestDto domesticFlightTrip() {
         return aFlightTripRequestDto()
                 .withTravelerId(UUID.fromString("723e4567-e89b-12d3-a456-426614174006"))
                 .withOrigin(LocationRequestDtoTestBuilder.aLocationRequestDto()
@@ -206,7 +206,7 @@ public class FlightTripRequestDtoTestBuilder {
                 .build();
     }
 
-    public static FlightTripRequestDTO internationalFlightTrip() {
+    public static FlightTripRequestDto internationalFlightTrip() {
         return aFlightTripRequestDto()
                 .withTravelerId(UUID.fromString("823e4567-e89b-12d3-a456-426614174007"))
                 .withOrigin(LocationRequestDtoTestBuilder.aLocationRequestDto()
@@ -234,7 +234,7 @@ public class FlightTripRequestDtoTestBuilder {
                 .build();
     }
 
-    public static FlightTripRequestDTO longHaulFlightTrip() {
+    public static FlightTripRequestDto longHaulFlightTrip() {
         return aFlightTripRequestDto()
                 .withTravelerId(UUID.fromString("923e4567-e89b-12d3-a456-426614174008"))
                 .withOrigin(LocationRequestDtoTestBuilder.aLocationRequestDto()
@@ -262,7 +262,7 @@ public class FlightTripRequestDtoTestBuilder {
                 .build();
     }
 
-    public static FlightTripRequestDTO europeanFlightTrip() {
+    public static FlightTripRequestDto europeanFlightTrip() {
         return aFlightTripRequestDto()
                 .withTravelerId(UUID.fromString("a23e4567-e89b-12d3-a456-426614174009"))
                 .withOrigin(LocationRequestDtoTestBuilder.aLocationRequestDto()
@@ -288,7 +288,7 @@ public class FlightTripRequestDtoTestBuilder {
                 .build();
     }
 
-    public static FlightTripRequestDTO cargoFlightTrip() {
+    public static FlightTripRequestDto cargoFlightTrip() {
         return aFlightTripRequestDto()
                 .withTravelerId(UUID.fromString("b23e4567-e89b-12d3-a456-426614174010"))
                 .withOrigin(LocationRequestDtoTestBuilder.aLocationRequestDto()
@@ -315,7 +315,7 @@ public class FlightTripRequestDtoTestBuilder {
                 .build();
     }
 
-    public static FlightTripRequestDTO redEyeFlightTrip() {
+    public static FlightTripRequestDto redEyeFlightTrip() {
         return aFlightTripRequestDto()
                 .withTravelerId(UUID.fromString("c23e4567-e89b-12d3-a456-426614174011"))
                 .withOrigin(LocationRequestDtoTestBuilder.aLocationRequestDto()
@@ -348,7 +348,7 @@ public class FlightTripRequestDtoTestBuilder {
                 .build();
     }
 
-    public static FlightTripRequestDTO businessClassFlightTrip() {
+    public static FlightTripRequestDto businessClassFlightTrip() {
         return aFlightTripRequestDto()
                 .withTravelerId(UUID.fromString("d23e4567-e89b-12d3-a456-426614174012"))
                 .withAvailableWeight(new BigDecimal("40.00"))

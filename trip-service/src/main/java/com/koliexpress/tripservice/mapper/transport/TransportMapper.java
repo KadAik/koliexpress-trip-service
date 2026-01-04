@@ -2,8 +2,6 @@ package com.koliexpress.tripservice.mapper.transport;
 
 
 import com.koliexpress.tripservice.dto.transport.*;
-import com.koliexpress.tripservice.enums.TransportType;
-import com.koliexpress.tripservice.mapper.LocationMapper;
 import com.koliexpress.tripservice.model.transport.BusTransport;
 import com.koliexpress.tripservice.model.transport.CarTransport;
 import com.koliexpress.tripservice.model.transport.FlightTransport;
@@ -23,9 +21,29 @@ import org.mapstruct.*;
 )
 public interface TransportMapper {
 
-    @SubclassMapping(source = FlightTransport.class, target = FlightTransportResponseDTO.class)
-    @SubclassMapping(source = BusTransport.class, target = BusTransportResponseDTO.class)
-    @SubclassMapping(source = CarTransport.class, target = CarTransportResponseDTO.class)
+    @SubclassMapping(source = FlightTransport.class, target = FlightTransportResponseDto.class)
+    @SubclassMapping(source = BusTransport.class, target = BusTransportResponseDto.class)
+    @SubclassMapping(source = CarTransport.class, target = CarTransportResponseDto.class)
     @Mapping(target = "transportType", source = "type")
-    TransportResponseDTO toDto(Transport entity);
+    TransportResponseDto toDto(Transport entity);
+
+    @SubclassMapping(source = FlightTransportRequestDto.class, target = FlightTransport.class)
+    @SubclassMapping(source = BusTransportRequestDto.class, target = BusTransport.class)
+    @SubclassMapping(source = CarTransportRequestDto.class, target = CarTransport.class)
+    Transport toEntity(TransportRequestDto dto);
+
+
+    @ObjectFactory
+    default Transport createTransport(TransportRequestDto dto) {
+        return switch (dto) {
+            case FlightTransportRequestDto f -> new FlightTransport();
+            case BusTransportRequestDto b -> new BusTransport();
+            case CarTransportRequestDto c -> new CarTransport();
+            default ->
+                    throw new IllegalArgumentException(
+                            "Unsupported TransportRequestDto: " + dto.getClass()
+                    );
+        };
+    }
+
 }

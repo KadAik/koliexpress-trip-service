@@ -1,7 +1,7 @@
 package com.koliexpress.tripservice.mapper;
 
 import com.koliexpress.tripservice.builder.model.transport.FlightTransportTestBuilder;
-import com.koliexpress.tripservice.dto.transport.FlightTransportResponseDTO;
+import com.koliexpress.tripservice.dto.transport.FlightTransportResponseDto;
 import com.koliexpress.tripservice.mapper.transport.FlightTransportMapper;
 import com.koliexpress.tripservice.model.transport.FlightTransport;
 import org.junit.jupiter.api.DisplayName;
@@ -31,7 +31,7 @@ public class FlightTransportMapperTest {
                 .aFlight()
                 .build();
 
-        FlightTransportResponseDTO dto = flightTransportMapper.toResponseDTO(entity);
+        FlightTransportResponseDto dto = flightTransportMapper.toResponseDto(entity);
 
         System.out.println(entity);
         System.out.println(objectMapper.writeValueAsString(dto));

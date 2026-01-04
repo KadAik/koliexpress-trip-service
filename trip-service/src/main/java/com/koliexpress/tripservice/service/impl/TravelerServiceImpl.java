@@ -1,8 +1,8 @@
 package com.koliexpress.tripservice.service.impl;
 
-import com.koliexpress.tripservice.dto.TravelerDetailResponseDTO;
-import com.koliexpress.tripservice.dto.TravelerRequestDTO;
-import com.koliexpress.tripservice.dto.TravelerSummaryResponseDTO;
+import com.koliexpress.tripservice.dto.TravelerDetailResponseDto;
+import com.koliexpress.tripservice.dto.TravelerRequestDto;
+import com.koliexpress.tripservice.dto.TravelerSummaryResponseDto;
 import com.koliexpress.tripservice.exceptions.InvalidArgumentException;
 import com.koliexpress.tripservice.exceptions.ResourceNotFoundException;
 import com.koliexpress.tripservice.mapper.TravelerMapper;
@@ -27,14 +27,14 @@ public class TravelerServiceImpl implements TravelerService {
     }
 
     @Override
-    public List<TravelerSummaryResponseDTO> getAllTravelers() {
+    public List<TravelerSummaryResponseDto> getAllTravelers() {
         return travelerRepository.findAll().stream()
-                .map(travelerMapper::toSummaryDTO)
+                .map(travelerMapper::toSummaryDto)
                 .toList();
     }
 
     @Override
-    public TravelerDetailResponseDTO getTravelerById(String id) {
+    public TravelerDetailResponseDto getTravelerById(String id) {
         if (id == null || id.isEmpty()) {
             throw new InvalidArgumentException("ID is required", "id");
         }
@@ -49,14 +49,14 @@ public class TravelerServiceImpl implements TravelerService {
                 .orElseThrow(
                     () -> new ResourceNotFoundException("Traveler with id " + id + " not found")
                 );
-        return travelerMapper.toDTO(repositoryTraveler);
+        return travelerMapper.toDto(repositoryTraveler);
     }
 
     @Override
     @Transactional
-    public TravelerDetailResponseDTO createTraveler(TravelerRequestDTO request) {
+    public TravelerDetailResponseDto createTraveler(TravelerRequestDto request) {
         Traveler travelerToSave = travelerMapper.toEntity(request);
         Traveler savedTraveler = travelerRepository.save(travelerToSave);
-        return travelerMapper.toDTO(savedTraveler);
+        return travelerMapper.toDto(savedTraveler);
     }
 }

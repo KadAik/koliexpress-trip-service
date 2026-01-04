@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Value
-public class LocationRequestDTO implements Serializable {
+public class LocationRequestDto implements Serializable {
 
     @NotBlank(
             message = "Location name is required",

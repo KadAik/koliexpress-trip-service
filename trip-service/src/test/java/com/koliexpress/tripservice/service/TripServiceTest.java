@@ -3,9 +3,8 @@ package com.koliexpress.tripservice.service;
 import com.koliexpress.tripservice.builder.dto.trip.FlightTripRequestDtoTestBuilder;
 import com.koliexpress.tripservice.builder.model.TravelerTestBuilder;
 import com.koliexpress.tripservice.builder.model.TripTestBuilder;
-import com.koliexpress.tripservice.dto.trip.FlightTripRequestDTO;
-import com.koliexpress.tripservice.dto.trip.TripResponseDTO;
-import com.koliexpress.tripservice.exceptions.InvalidArgumentException;
+import com.koliexpress.tripservice.dto.trip.FlightTripRequestDto;
+import com.koliexpress.tripservice.dto.trip.TripResponseDto;
 import com.koliexpress.tripservice.exceptions.ResourceNotFoundException;
 import com.koliexpress.tripservice.mapper.TripMapper;
 import com.koliexpress.tripservice.model.Traveler;
@@ -58,20 +57,20 @@ class TripServiceTest {
     @Test
     void testGetAllTrips_whenTripsExist_shouldReturnListOfTripsWithImportantFields(){
 
-        TripResponseDTO dto_1 = TripResponseDTO
+        TripResponseDto dto_1 = TripResponseDto
                 .builder().build();
 
 
         given(tripRepository.findAll())
                 .willReturn(List.of());
 
-        List<TripResponseDTO> trips = tripService.getAllTrips();
+        List<TripResponseDto> trips = tripService.getAllTrips();
     }
 
     @Test
     void testCreateTrip_whenValidFlightTripRequest_shouldCreateFlightTrip() {
         // Arrange
-        FlightTripRequestDTO request = FlightTripRequestDtoTestBuilder
+        FlightTripRequestDto request = FlightTripRequestDtoTestBuilder
                 .aFlightTripRequestDto()
                 .withTravelerId(travelerId)
                 .build();
@@ -80,7 +79,7 @@ class TripServiceTest {
                 .aFlightTrip()
                 .build();
 
-        TripResponseDTO expectedResponse = TripResponseDTO.builder().build();
+        TripResponseDto expectedResponse = TripResponseDto.builder().build();
 
         given(travelerRepository.findById(travelerId))
                 .willReturn(Optional.of(traveler));
@@ -88,11 +87,11 @@ class TripServiceTest {
                 .willReturn(mappedTrip);
         given(tripRepository.save(mappedTrip))
                 .willReturn(mappedTrip);
-        given(tripMapper.toResponseDTO(mappedTrip))
+        given(tripMapper.toResponseDto(mappedTrip))
                 .willReturn(expectedResponse);
 
         // Act
-        TripResponseDTO response = tripService.createTrip(request);
+        TripResponseDto response = tripService.createTrip(request);
 
         // Assert
         assertThat(response).isSameAs(expectedResponse);
@@ -101,14 +100,14 @@ class TripServiceTest {
         verify(travelerRepository).findById(travelerId);
         verify(tripMapper).toEntity(request);
         verify(tripRepository).save(mappedTrip);
-        verify(tripMapper).toResponseDTO(mappedTrip);
+        verify(tripMapper).toResponseDto(mappedTrip);
     }
 
     @Test
     void testCreateTrip_whenTravelerNotFound_shouldThrowResourceNotFoundException() {
         // Arrange
         UUID invalidTravelerId = UUID.randomUUID();
-        FlightTripRequestDTO request = FlightTripRequestDtoTestBuilder
+        FlightTripRequestDto request = FlightTripRequestDtoTestBuilder
                 .aFlightTripRequestDto()
                 .withTravelerId(invalidTravelerId)
                 .build();
@@ -127,7 +126,7 @@ class TripServiceTest {
     @Test
     void testCreateTrip_whenTravelerIdIsNullOrMissing_shouldReturnValidationErrorResponse() {
         // Arrange
-        FlightTripRequestDTO request = FlightTripRequestDtoTestBuilder
+        FlightTripRequestDto request = FlightTripRequestDtoTestBuilder
                 .aFlightTripRequestDto()
                 .withTravelerId(null)
                 .build();

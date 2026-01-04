@@ -11,7 +11,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TravelerRequestDTO implements Serializable {
+public class TravelerRequestDto implements Serializable {
 
     @NotBlank(
             message = "First name is required",

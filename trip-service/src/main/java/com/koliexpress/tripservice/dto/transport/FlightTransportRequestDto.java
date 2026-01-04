@@ -12,7 +12,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class FlightTransportRequestDTO extends TransportRequestDTO {
+public class FlightTransportRequestDto extends TransportRequestDto {
 
     @NotBlank(
             message = "Aircraft type is required",

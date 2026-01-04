@@ -8,10 +8,10 @@ import java.util.UUID;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * DTO for {@link com.koliexpress.tripservice.model.Traveler}
+ * Dto for {@link com.koliexpress.tripservice.model.Traveler}
  */
 @Value
-public class TravelerSummaryResponseDTO implements Serializable {
+public class TravelerSummaryResponseDto implements Serializable {
     UUID id;
 
     @JsonProperty("name")

@@ -48,7 +48,6 @@ public abstract class Transport {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
-    @Transient
     public abstract TransportType getType();
 
     public boolean isFlight() { return getType() == TransportType.PLANE; }

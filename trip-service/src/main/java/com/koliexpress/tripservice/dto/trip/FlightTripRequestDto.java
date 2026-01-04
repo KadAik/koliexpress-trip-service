@@ -1,7 +1,7 @@
 package com.koliexpress.tripservice.dto.trip;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.koliexpress.tripservice.dto.transport.FlightTransportRequestDTO;
+import com.koliexpress.tripservice.dto.transport.FlightTransportRequestDto;
 import com.koliexpress.tripservice.enums.TransportType;
 import com.koliexpress.tripservice.validation.ValidationGroups;
 import jakarta.validation.Valid;
@@ -14,7 +14,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @SuperBuilder
 @Getter
-public class FlightTripRequestDTO extends TripRequestDTO {
+public class FlightTripRequestDto extends TripRequestDto {
 
     @NotNull(
             message = "Flight details are required",
@@ -22,7 +22,7 @@ public class FlightTripRequestDTO extends TripRequestDTO {
     )
     @Valid
     @JsonProperty("flight_details")
-    private FlightTransportRequestDTO flightDetails;
+    private FlightTransportRequestDto flightDetails;
 
     public TransportType setTransportType() {
         return TransportType.PLANE;

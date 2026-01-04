@@ -1,6 +1,6 @@
 package com.koliexpress.tripservice.service.impl;
 
-import com.koliexpress.tripservice.dto.transport.FlightTransportResponseDTO;
+import com.koliexpress.tripservice.dto.transport.FlightTransportResponseDto;
 import com.koliexpress.tripservice.dto.trip.*;
 import com.koliexpress.tripservice.exceptions.InvalidArgumentException;
 import com.koliexpress.tripservice.exceptions.ResourceNotFoundException;
@@ -41,16 +41,16 @@ public class TripServiceImpl implements TripService {
     }
 
     @Override
-    public List<TripResponseDTO> getAllTrips(){
+    public List<TripResponseDto> getAllTrips(){
         return tripRepository
                 .findAll().stream()
-                .map(tripMapper::toResponseDTO)
+                .map(tripMapper::toResponseDto)
                 .toList();
     }
 
     @Override
     @Transactional
-    public TripResponseDTO getTripById(String id){
+    public TripResponseDto getTripById(String id){
         if (id == null || id.isEmpty()) {
             throw new InvalidArgumentException("ID is required", "id");
         }
@@ -88,15 +88,15 @@ public class TripServiceImpl implements TripService {
         System.out.println("Is HibernateProxy: " + (repositoryTrip.getTransport() instanceof org.hibernate.proxy.HibernateProxy));
         System.out.println("Is FlightTransport: " + (repositoryTrip.getTransport() instanceof FlightTransport));
 
-        TripResponseDTO response = tripMapper.toResponseDTO(repositoryTrip);
+        TripResponseDto response = tripMapper.toResponseDto(repositoryTrip);
         // Check result
         System.out.println("=== RESULT ===");
-        System.out.println("DTO class: " + response.getTransportDetails().getClass().getName());
-        if (response.getTransportDetails() instanceof FlightTransportResponseDTO flight) {
-            System.out.println("✓ It's a FlightTransportResponseDTO!");
+        System.out.println("Dto class: " + response.getTransportDetails().getClass().getName());
+        if (response.getTransportDetails() instanceof FlightTransportResponseDto flight) {
+            System.out.println("✓ It's a FlightTransportResponseDto!");
             System.out.println("Flight number: " + flight.getFlightNumber());
         } else {
-            System.out.println("✗ It's just a base TransportResponseDTO");
+            System.out.println("✗ It's just a base TransportResponseDto");
         }
 
     return response;
@@ -104,7 +104,7 @@ public class TripServiceImpl implements TripService {
 
     @Override
     @Transactional
-    public TripResponseDTO createTrip(TripRequestDTO request) {
+    public TripResponseDto createTrip(TripRequestDto request) {
 
         // 1. Find traveler
         Traveler traveler = travelerRepository
@@ -120,16 +120,17 @@ public class TripServiceImpl implements TripService {
 
         // 3. Set non-mapped fields
         trip.setTraveler(traveler);
+        trip.setTransportType(trip.getTransport().getType());
 
         // 4. Persist
         Trip savedTrip = tripRepository.save(trip);
 
-        return tripMapper.toResponseDTO(savedTrip);
+        return tripMapper.toResponseDto(savedTrip);
     }
 
     @Override
     @Transactional
-    public TripResponseDTO updateTrip(String id, TripRequestDTO request){
+    public TripResponseDto updateTrip(String id, TripRequestDto request){
         // 1. Retrieve the Trip to be updated
         Trip repositoryTrip = tripRepository
                 .findById(UUID.fromString(id))
@@ -137,20 +138,20 @@ public class TripServiceImpl implements TripService {
 
         // 2. Perform the update
         Trip updatedTrip = switch (request) {
-            case FlightTripRequestDTO flightTripRequestDTO ->
-                    tripMapper.updateEntityFromDtoAndReturn(flightTripRequestDTO, repositoryTrip, locationMapper);
-            case BusTripRequestDTO busTripRequestDTO ->
-                    tripMapper.updateEntityFromDtoAndReturn(busTripRequestDTO, repositoryTrip, locationMapper);
-            case CarTripRequestDTO carTripRequestDTO ->
-                    tripMapper.updateEntityFromDtoAndReturn(carTripRequestDTO, repositoryTrip, locationMapper);
+            case FlightTripRequestDto flightTripRequestDto ->
+                    tripMapper.updateEntityFromDtoAndReturn(flightTripRequestDto, repositoryTrip, locationMapper);
+            case BusTripRequestDto busTripRequestDto ->
+                    tripMapper.updateEntityFromDtoAndReturn(busTripRequestDto, repositoryTrip, locationMapper);
+            case CarTripRequestDto carTripRequestDto ->
+                    tripMapper.updateEntityFromDtoAndReturn(carTripRequestDto, repositoryTrip, locationMapper);
             default ->
-                    throw new InvalidArgumentException("Unsupported TripRequestDTO type : " + request.getClass().getName(), "request");
+                    throw new InvalidArgumentException("Unsupported TripRequestDto type : " + request.getClass().getName(), "request");
         };
 
         // 3. Save the updated Trip : due to @Transactional, this is optional but for clarity
         Trip savedTrip = tripRepository.save(updatedTrip);
 
-        return tripMapper.toResponseDTO(savedTrip);
+        return tripMapper.toResponseDto(savedTrip);
     }
 
     public void deleteTrip(String id){

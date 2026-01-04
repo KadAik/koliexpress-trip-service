@@ -5,13 +5,13 @@ import com.koliexpress.tripservice.dto.trip.*;
 import java.util.List;
 
 public interface TripService {
-    List<TripResponseDTO> getAllTrips();
+    List<TripResponseDto> getAllTrips();
 
-    TripResponseDTO getTripById(String id);
+    TripResponseDto getTripById(String id);
 
-    TripResponseDTO createTrip(TripRequestDTO trip);
+    TripResponseDto createTrip(TripRequestDto trip);
 
-    TripResponseDTO updateTrip(String id, TripRequestDTO request);
+    TripResponseDto updateTrip(String id, TripRequestDto request);
 
     void deleteTrip(String id);
 }
