@@ -24,7 +24,8 @@ import java.io.Serializable;
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
         include = JsonTypeInfo.As.EXISTING_PROPERTY,
-        property = "transport_type"
+        property = "transport_type",
+        visible = true
 )
 @JsonSubTypes({
         @JsonSubTypes.Type(value = FlightTransportRequestDto.class, name = "PLANE"),
@@ -33,7 +34,7 @@ import java.io.Serializable;
 })
 public abstract class TransportRequestDto implements Serializable {
 
-    @NotNull(message = "Transport type is required", groups = ValidationGroups.Create.class)
+    @NotNull(message = "Transport type is required", groups = {ValidationGroups.Create.class, ValidationGroups.Update.class})
     @JsonProperty("transport_type")
     private TransportType type;
 

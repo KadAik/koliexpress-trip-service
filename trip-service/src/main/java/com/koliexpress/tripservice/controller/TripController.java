@@ -1,5 +1,6 @@
 package com.koliexpress.tripservice.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.koliexpress.tripservice.dto.trip.*;
 import com.koliexpress.tripservice.service.TripService;
 import com.koliexpress.tripservice.validation.ValidationGroups;
@@ -18,26 +19,14 @@ import java.util.List;
 public class TripController {
 
     private final TripService tripService;
+    private final ObjectMapper objectMapper;
 
-    public TripController(TripService tripService) {
+    public TripController(TripService tripService, ObjectMapper objectMapper) {
         this.tripService = tripService;
+        this.objectMapper = objectMapper;
     }
 
     @GetMapping
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Successfully retrieved list of all trips",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = TripResponseDto.class)
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "500",
-                    description = "Internal server error"
-            )
-    })
     public List<TripResponseDto> getAllTrips(){
         return tripService.getAllTrips();
     }
@@ -53,18 +42,10 @@ public class TripController {
         return tripService.createTrip(request);
     }
 
-    @PutMapping("/flights/{id}")
-    public TripResponseDto updateFlightTrip(@PathVariable String id, @Validated(ValidationGroups.Update.class) @RequestBody FlightTripRequestDto request){
-        return tripService.updateTrip(id, request);
-    }
-
-    @PutMapping("/buses/{id}")
-    public TripResponseDto updateBusTrip(@PathVariable String id, @Validated(ValidationGroups.Update.class) @RequestBody BusTripRequestDto request){
-        return tripService.updateTrip(id, request);
-    }
-
-    @PutMapping("/cars/{id}")
-    public TripResponseDto updateCarTrip(@PathVariable String id, @Validated(ValidationGroups.Update.class) @RequestBody CarTripRequestDto request){
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public TripResponseDto updateTrip(@PathVariable String id, @Validated(ValidationGroups.Update.class) @RequestBody TripRequestDto request) throws Exception{
+        System.out.println("Payload : " + objectMapper.writeValueAsString(request));
         return tripService.updateTrip(id, request);
     }
 

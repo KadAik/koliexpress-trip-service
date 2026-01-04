@@ -59,71 +59,17 @@ public interface TripMapper {
      * Update existing Trip entity with values from Dto
      */
 
-    @Mapping(target = "origin", ignore = true)
+    @Mapping(target = "origin", ignore = true) // handled by service
     @Mapping(target = "destination", ignore = true)
-    void updateEntityFromDto(FlightTripRequestDto dto, @MappingTarget Trip trip);
+    @Mapping(target = "transport", source = "transport")
+    @Mapping(target = "id", ignore = true)
+    void updateEntityFromDto(TripRequestDto dto, @MappingTarget Trip trip);
 
-    @Mapping(target = "origin", ignore = true)
+    @Mapping(target = "origin", ignore = true) // handled by service
     @Mapping(target = "destination", ignore = true)
-    void updateEntityFromDto(BusTripRequestDto dto, @MappingTarget Trip trip);
-
-    @Mapping(target = "origin", ignore = true)
-    @Mapping(target = "destination", ignore = true)
-    void updateEntityFromDto(CarTripRequestDto dto, @MappingTarget Trip trip);
-
-    @Mapping(target = "origin", ignore = true)
-    @Mapping(target = "destination", ignore = true)
-    Trip updateEntityFromDtoAndReturn(FlightTripRequestDto dto, @MappingTarget Trip trip, @Context LocationMapper locationMapper);
-
-    @Mapping(target = "origin", ignore = true)
-    @Mapping(target = "destination", ignore = true)
-    Trip updateEntityFromDtoAndReturn(BusTripRequestDto dto, @MappingTarget Trip trip, @Context LocationMapper locationMapper);
-
-    @Mapping(target = "origin", ignore = true)
-    @Mapping(target = "destination", ignore = true)
-    Trip updateEntityFromDtoAndReturn(CarTripRequestDto dto, @MappingTarget Trip trip, @Context LocationMapper locationMapper);
-
-    @AfterMapping
-    default void updateLocations(
-            FlightTripRequestDto dto,
-            @MappingTarget Trip trip,
-            @Context LocationMapper locationMapper
-    ) {
-        updateLocationsInternal(dto, trip, locationMapper);
-    }
-
-    @AfterMapping
-    default void updateLocations(
-            BusTripRequestDto dto,
-            @MappingTarget Trip trip,
-            @Context LocationMapper locationMapper
-    ) {
-        updateLocationsInternal(dto, trip, locationMapper);
-    }
-
-    @AfterMapping
-    default void updateLocations(
-            CarTripRequestDto dto,
-            @MappingTarget Trip trip,
-            @Context LocationMapper locationMapper
-    ) {
-        updateLocationsInternal(dto, trip, locationMapper);
-    }
-
-    private void updateLocationsInternal(
-            TripRequestDto dto,
-            Trip trip,
-            LocationMapper locationMapper
-    ) {
-        if (dto.getOrigin() != null) {
-            // Location is a value object -> replace entirely.
-            trip.setOrigin(locationMapper.toEntity(dto.getOrigin()));
-        }
-
-        if (dto.getDestination() != null) {
-            trip.setDestination(locationMapper.toEntity(dto.getDestination()));
-        }
-    }
+    @Mapping(target = "transport", ignore = true) // handled by service
+    @Mapping(target = "id", ignore = true)
+    Trip updateEntityFromDtoAndReturn(TripRequestDto dto, @MappingTarget Trip trip);
 
 
     // ============================================

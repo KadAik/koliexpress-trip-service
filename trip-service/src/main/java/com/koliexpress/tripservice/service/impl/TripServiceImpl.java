@@ -1,11 +1,14 @@
 package com.koliexpress.tripservice.service.impl;
 
+import com.koliexpress.tripservice.dto.LocationRequestDto;
 import com.koliexpress.tripservice.dto.transport.FlightTransportResponseDto;
+import com.koliexpress.tripservice.dto.transport.TransportRequestDto;
 import com.koliexpress.tripservice.dto.trip.*;
 import com.koliexpress.tripservice.exceptions.InvalidArgumentException;
 import com.koliexpress.tripservice.exceptions.ResourceNotFoundException;
 import com.koliexpress.tripservice.mapper.LocationMapper;
 import com.koliexpress.tripservice.mapper.TripMapper;
+import com.koliexpress.tripservice.mapper.transport.TransportMapper;
 import com.koliexpress.tripservice.model.Traveler;
 import com.koliexpress.tripservice.model.Trip;
 import com.koliexpress.tripservice.model.transport.FlightTransport;
@@ -17,6 +20,7 @@ import jakarta.transaction.Transactional;
 import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,16 +32,18 @@ public class TripServiceImpl implements TripService {
 
     private final TripMapper tripMapper;
     private final LocationMapper locationMapper;
+    private final TransportMapper transportMapper;
 
     public TripServiceImpl(
             TripRepository tripRepository,
             TravelerRepository travelerRepository,
             TripMapper tripMapper,
-            LocationMapper locationMapper) {
+            LocationMapper locationMapper, TransportMapper transportMapper) {
         this.tripRepository = tripRepository;
         this.travelerRepository = travelerRepository;
         this.tripMapper = tripMapper;
         this.locationMapper = locationMapper;
+        this.transportMapper = transportMapper;
     }
 
     @Override
@@ -130,25 +136,50 @@ public class TripServiceImpl implements TripService {
 
     @Override
     @Transactional
-    public TripResponseDto updateTrip(String id, TripRequestDto request){
+    public TripResponseDto updateTrip(String id, TripRequestDto dto){
         // 1. Retrieve the Trip to be updated
         Trip repositoryTrip = tripRepository
                 .findById(UUID.fromString(id))
                 .orElseThrow(() -> new ResourceNotFoundException("Trip with id " + id + " not found"));
 
-        // 2. Perform the update
-        Trip updatedTrip = switch (request) {
-            case FlightTripRequestDto flightTripRequestDto ->
-                    tripMapper.updateEntityFromDtoAndReturn(flightTripRequestDto, repositoryTrip, locationMapper);
-            case BusTripRequestDto busTripRequestDto ->
-                    tripMapper.updateEntityFromDtoAndReturn(busTripRequestDto, repositoryTrip, locationMapper);
-            case CarTripRequestDto carTripRequestDto ->
-                    tripMapper.updateEntityFromDtoAndReturn(carTripRequestDto, repositoryTrip, locationMapper);
-            default ->
-                    throw new InvalidArgumentException("Unsupported TripRequestDto type : " + request.getClass().getName(), "request");
-        };
+        // 2. Handle transport update
+        TransportRequestDto transportFromDto = dto.getTransport();
+        if(transportFromDto != null) {
+            // Transport type is not updatable, create a new Trip if needed
+            // But we do need the type in the request to instantiate the correct Transport subclass
+            if (transportFromDto.getType() != repositoryTrip.getTransportType()) {
+                throw new InvalidArgumentException(
+                        "Transport type cannot be changed. Create a new Trip with the desired transport type.",
+                        "transport.type"
+                );
+            }
+            Transport oldTransport = repositoryTrip.getTransport();
+            // Related entities such as Transport may have been lazy loaded (Hibernate proxies)
+            Hibernate.initialize(oldTransport);  // Force load from DB
+            Transport unproxied = (Transport) Hibernate.unproxy(oldTransport);  // Get the real object
+            Transport updatedTransport = transportMapper.updateEntityFromDtoAndReturn(transportFromDto, unproxied);
+            repositoryTrip.setTransport(updatedTransport);
+        }
 
-        // 3. Save the updated Trip : due to @Transactional, this is optional but for clarity
+        // 3. Handle origin and destination (locations)
+        LocationRequestDto originFromDto = dto.getOrigin();
+        LocationRequestDto destinationFromDto = dto.getDestination();
+        // Locations are value objects -> immutable
+        if(originFromDto != null){
+            repositoryTrip.setOrigin(locationMapper.toEntity(originFromDto));
+        }
+        if(destinationFromDto != null){
+            repositoryTrip.setDestination(locationMapper.toEntity(destinationFromDto));
+        }
+
+        // 4. Finalize
+        // Mapper ignores locations and transport
+        Trip updatedTrip = tripMapper.updateEntityFromDtoAndReturn(dto, repositoryTrip);
+
+        // 5. Set the updated date
+        updatedTrip.setUpdatedAt(LocalDateTime.now());
+
+        // 6. Save the updated Trip : due to @Transactional, this is optional but for clarity
         Trip savedTrip = tripRepository.save(updatedTrip);
 
         return tripMapper.toResponseDto(savedTrip);
