@@ -143,7 +143,7 @@ class TripServiceTest {
                         .build())
                 .build();
 
-        given(tripRepository.findById(UUID.fromString(tripId)))
+        given(tripRepository.findByIdWithTransport(UUID.fromString(tripId)))
                 .willReturn(Optional.of(trip));
 
         given(tripMapper.toDto(trip))
@@ -165,7 +165,7 @@ class TripServiceTest {
         assertThat(transport).hasFieldOrProperty("flightNumber");
         assertThat(transport).extracting("flightNumber").isNotNull();
 
-        verify(tripRepository).findById(UUID.fromString(tripId));
+        verify(tripRepository).findByIdWithTransport(UUID.fromString(tripId));
         verify(tripMapper).toDto(any(Trip.class));
 
     }

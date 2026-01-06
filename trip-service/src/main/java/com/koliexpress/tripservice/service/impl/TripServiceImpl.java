@@ -64,16 +64,8 @@ public class TripServiceImpl implements TripService {
         UUID tripId = parseUUID(id);
 
         Trip repositoryTrip = tripRepository
-            .findById(tripId)
+            .findByIdWithTransport(tripId)
             .orElseThrow(() -> new ResourceNotFoundException("Trip with id " + id + " not found"));
-
-        Transport transport = repositoryTrip.getTransport();
-        // Transport might be lazy loaded and might be a Hibernate proxy so we initialize it.
-        if (transport instanceof HibernateProxy) {
-            Hibernate.initialize(transport);  // Force load from DB
-            Transport unproxied = (Transport) Hibernate.unproxy(transport);  // Get real object
-            repositoryTrip.setTransport(unproxied);  // Replace proxy with real object in Trip
-        }
 
         return tripMapper.toDto(repositoryTrip);
     }
