@@ -5,7 +5,7 @@ import com.koliexpress.tripservice.dto.trip.*;
 import java.util.List;
 
 public interface TripService {
-    List<TripResponseDto> getAllTrips();
+    List<TripResponseDtoNonVerbose> getAllTrips();
 
     TripResponseDto getTripById(String id);
 

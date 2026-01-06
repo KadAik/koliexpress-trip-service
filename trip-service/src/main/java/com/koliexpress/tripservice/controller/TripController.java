@@ -27,7 +27,7 @@ public class TripController {
     }
 
     @GetMapping
-    public List<TripResponseDto> getAllTrips(){
+    public List<TripResponseDtoNonVerbose> getAllTrips(){
         return tripService.getAllTrips();
     }
 

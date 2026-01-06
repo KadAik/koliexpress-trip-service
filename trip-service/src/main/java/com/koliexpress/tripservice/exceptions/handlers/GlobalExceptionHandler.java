@@ -23,16 +23,13 @@ public class GlobalExceptionHandler {
                 .body(ex.getMessage());
     }
     @ExceptionHandler(InvalidArgumentException.class)
-    public ResponseEntity<Map<String, List<String>>> handleInvalidArgumentException(InvalidArgumentException ex) {
-        ValidationErrorResponseDto err = new ValidationErrorResponseDto(ex.getField());
-        err.addMessage(ex.getMessage());
-        return ResponseEntity
-                .status(400)
-                .body(
-                        Map.of(
-                                err.getField(), err.getMessages()
-                        )
-                );
+    public ResponseEntity<Map<String, Object>> handleInvalidArgumentException(InvalidArgumentException ex) {
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("status", 400);
+        response.put("error", ex.getMessage());
+        response.put("field", ex.getField());
+
+        return ResponseEntity.badRequest().body(response);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

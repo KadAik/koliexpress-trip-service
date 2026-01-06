@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.koliexpress.tripservice.enums.TransportType;
 import com.koliexpress.tripservice.enums.TransportVerificationStatus;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -27,6 +28,7 @@ import java.util.UUID;
         @JsonSubTypes.Type(value = BusTransportResponseDto.class, name = "BUS"),
         @JsonSubTypes.Type(value = CarTransportResponseDto.class, name = "CAR")
 })
+@SuperBuilder
 public class TransportResponseDto implements Serializable {
     UUID id;
 

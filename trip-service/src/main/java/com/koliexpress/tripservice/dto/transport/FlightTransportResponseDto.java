@@ -3,12 +3,14 @@ package com.koliexpress.tripservice.dto.transport;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
 //@AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@SuperBuilder
 public class FlightTransportResponseDto extends TransportResponseDto {
 
     @JsonProperty("flight_number")

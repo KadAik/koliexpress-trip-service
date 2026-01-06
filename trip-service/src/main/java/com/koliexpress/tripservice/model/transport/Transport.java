@@ -1,5 +1,6 @@
 package com.koliexpress.tripservice.model.transport;
 
+import com.koliexpress.tripservice.config.ApiPaths;
 import com.koliexpress.tripservice.enums.TransportType;
 import com.koliexpress.tripservice.enums.TransportVerificationStatus;
 import jakarta.persistence.*;
@@ -56,5 +57,12 @@ public abstract class Transport {
 
     public abstract boolean validate();
     public abstract String getSummary();
+
+    @Transient
+    public String getUrl(){
+        return ApiPaths.TRANSPORTS.path()
+                + '/'
+                + this.getId();
+    }
 }
 

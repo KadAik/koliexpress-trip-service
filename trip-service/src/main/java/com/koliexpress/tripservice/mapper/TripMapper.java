@@ -1,14 +1,8 @@
 package com.koliexpress.tripservice.mapper;
 
-import com.koliexpress.tripservice.dto.transport.*;
 import com.koliexpress.tripservice.dto.trip.*;
-import com.koliexpress.tripservice.enums.TransportType;
-import com.koliexpress.tripservice.mapper.transport.BusTransportMapper;
-import com.koliexpress.tripservice.mapper.transport.CarTransportMapper;
-import com.koliexpress.tripservice.mapper.transport.FlightTransportMapper;
 import com.koliexpress.tripservice.mapper.transport.TransportMapper;
 import com.koliexpress.tripservice.model.Trip;
-import com.koliexpress.tripservice.model.transport.*;
 import org.mapstruct.*;
 
 /**
@@ -21,9 +15,6 @@ import org.mapstruct.*;
         unmappedSourcePolicy = ReportingPolicy.IGNORE,
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
         uses = {
-                FlightTransportMapper.class,
-                BusTransportMapper.class,
-                CarTransportMapper.class,
                 LocationMapper.class,
                 TransportMapper.class
         }
@@ -37,7 +28,13 @@ public interface TripMapper {
     @Mapping(target = "origin", source = "origin")
     @Mapping(target = "destination", source = "destination")
     @Mapping(target = "transportDetails", source = "transport")
-    TripResponseDto toResponseDto(Trip entity);
+    TripResponseDto toDto(Trip entity);
+
+    @Mapping(target = "travelerId", source = "traveler.id")
+    @Mapping(target = "origin", source = "origin")
+    @Mapping(target = "destination", source = "destination")
+    @Mapping(target = "transport", source = "transport")
+    TripResponseDtoNonVerbose toDtoNonVerbose(Trip entity);
 
     /**
      * TripRequestDto → Trip Entity
@@ -70,36 +67,4 @@ public interface TripMapper {
     @Mapping(target = "transport", ignore = true) // handled by service
     @Mapping(target = "id", ignore = true)
     Trip updateEntityFromDtoAndReturn(TripRequestDto dto, @MappingTarget Trip trip);
-
-
-    // ============================================
-    // POLYMORPHIC TRANSPORT MAPPING
-    // ============================================
-
-    default FlightTransportResponseDto mapFlightDetails(Trip trip) {
-        return trip.getTransport().getType() == TransportType.PLANE
-                ? map((FlightTransport) trip.getTransport())
-                : null;
-    }
-
-    default BusTransportResponseDto mapBusDetails(Trip trip) {
-        return trip.getTransport().getType() == TransportType.BUS
-                ? map((BusTransport) trip.getTransport())
-                : null;
-    }
-
-    default CarTransportResponseDto mapCarDetails(Trip trip) {
-        return trip.getTransport().getType() == TransportType.CAR
-                ? map((CarTransport) trip.getTransport())
-                : null;
-    }
-
-
-    FlightTransportResponseDto map(FlightTransport flightTransport);
-    BusTransportResponseDto map(BusTransport busTransport);
-    CarTransportResponseDto map(CarTransport carTransport);
-
-    FlightTransport map(FlightTransportRequestDto flightTransportDto);
-    BusTransport map(BusTransportRequestDto busTransportDto);
-    CarTransport map(CarTransportRequestDto carTransportDto);
 }

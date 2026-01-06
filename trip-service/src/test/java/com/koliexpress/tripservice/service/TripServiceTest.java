@@ -3,8 +3,13 @@ package com.koliexpress.tripservice.service;
 import com.koliexpress.tripservice.builder.dto.trip.FlightTripRequestDtoTestBuilder;
 import com.koliexpress.tripservice.builder.model.TravelerTestBuilder;
 import com.koliexpress.tripservice.builder.model.TripTestBuilder;
+import com.koliexpress.tripservice.dto.LocationResponseDto;
+import com.koliexpress.tripservice.dto.transport.FlightTransportResponseDto;
+import com.koliexpress.tripservice.dto.transport.TransportResponseDto;
+import com.koliexpress.tripservice.dto.transport.TransportResponseDtoNonVerbose;
 import com.koliexpress.tripservice.dto.trip.FlightTripRequestDto;
 import com.koliexpress.tripservice.dto.trip.TripResponseDto;
+import com.koliexpress.tripservice.dto.trip.TripResponseDtoNonVerbose;
 import com.koliexpress.tripservice.exceptions.ResourceNotFoundException;
 import com.koliexpress.tripservice.mapper.TripMapper;
 import com.koliexpress.tripservice.model.Traveler;
@@ -23,7 +28,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.assertj.core.api.AssertionsForClassTypes.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
@@ -57,14 +64,110 @@ class TripServiceTest {
     @Test
     void testGetAllTrips_whenTripsExist_shouldReturnListOfTripsWithImportantFields(){
 
-        TripResponseDto dto_1 = TripResponseDto
-                .builder().build();
+        Trip trip = TripTestBuilder
+                .aFlightTrip()
+                .build();
 
+        TripResponseDtoNonVerbose dto = TripResponseDtoNonVerbose
+                .builder()
+                .id(trip.getId())
+                .url(trip.getUrl())
+                .origin(LocationResponseDto
+                        .builder()
+                        .name("Lagos")
+                        .build())
+                .destination(LocationResponseDto
+                        .builder()
+                        .name("Accra")
+                        .build())
+                .transportType(trip.getTransportType())
+                .transport(TransportResponseDtoNonVerbose
+                        .builder()
+                        .url(trip.getUrl())
+                        .type(trip.getTransportType())
+                        .id(trip.getTransport().getId())
+                        .build())
+                .build();
 
         given(tripRepository.findAll())
-                .willReturn(List.of());
+                .willReturn(List.of(trip));
+        given(tripMapper.toDtoNonVerbose(trip))
+                .willReturn(dto);
 
-        List<TripResponseDto> trips = tripService.getAllTrips();
+        // when
+        List<TripResponseDtoNonVerbose> trips = tripService.getAllTrips();
+
+        // then
+        assertThat(trips).isNotNull().hasSize(1);
+
+        TripResponseDtoNonVerbose result = trips.get(0);
+
+        assertThat(result.getId()).isEqualTo(trip.getId());
+        assertThat(result.getOrigin()).isNotNull();
+        assertThat(result.getDestination()).isNotNull();
+        assertThat(result.getTransport()).isNotNull();
+        assertThat(result.getTransportType()).isNotNull();
+        assertThat(result).hasFieldOrProperty("url");
+        assertThat(result.getUrl()).isNotNull();
+
+        TransportResponseDtoNonVerbose transport = result.getTransport();
+        assertThat(transport)
+                .extracting("id", "url")
+                .doesNotContainNull();
+
+        verify(tripRepository).findAll();
+        verify(tripMapper).toDtoNonVerbose(trip);
+
+    }
+
+    @Test
+    void testGetTripById_whenTripExists_shouldReturnATripWithAllFields(){
+
+        String tripId = UUID.randomUUID().toString();
+
+        Trip trip = TripTestBuilder
+                .aFlightTrip()
+                .build();
+
+        TripResponseDto dto = TripResponseDto
+                .builder()
+                .id(UUID.fromString(tripId))
+                .origin(LocationResponseDto.builder().build())
+                .destination(LocationResponseDto.builder().build())
+                .transportType(trip.getTransportType())
+                .transportDetails(FlightTransportResponseDto
+                        .builder()
+                        .providerName("Delta Airlines")
+                        .flightNumber("DEL01")
+                        .transportType(trip.getTransportType())
+                        .build())
+                .build();
+
+        given(tripRepository.findById(UUID.fromString(tripId)))
+                .willReturn(Optional.of(trip));
+
+        given(tripMapper.toDto(trip))
+                .willReturn(dto);
+
+        // When
+        TripResponseDto response = tripService.getTripById(tripId);
+
+        assertThat(response).isNotNull();
+        assertThat(response.getId()).isEqualTo(UUID.fromString(tripId));
+        assertThat(response.getOrigin()).isNotNull();
+        assertThat(response.getDestination()).isNotNull();
+        assertThat(response.getTransportDetails()).isNotNull();
+
+        TransportResponseDto transport = response.getTransportDetails();
+
+        assertThat(transport.getProviderName()).isNotNull();
+        assertThat(transport.getTransportType()).isNotNull();
+        assertThat(transport).hasFieldOrProperty("flightNumber");
+        assertThat(transport).extracting("flightNumber").isNotNull();
+
+        verify(tripRepository).findById(UUID.fromString(tripId));
+        verify(tripMapper).toDto(any(Trip.class));
+
     }
 
     @Test
@@ -87,7 +190,7 @@ class TripServiceTest {
                 .willReturn(mappedTrip);
         given(tripRepository.save(mappedTrip))
                 .willReturn(mappedTrip);
-        given(tripMapper.toResponseDto(mappedTrip))
+        given(tripMapper.toDto(mappedTrip))
                 .willReturn(expectedResponse);
 
         // Act
@@ -100,7 +203,7 @@ class TripServiceTest {
         verify(travelerRepository).findById(travelerId);
         verify(tripMapper).toEntity(request);
         verify(tripRepository).save(mappedTrip);
-        verify(tripMapper).toResponseDto(mappedTrip);
+        verify(tripMapper).toDto(mappedTrip);
     }
 
     @Test

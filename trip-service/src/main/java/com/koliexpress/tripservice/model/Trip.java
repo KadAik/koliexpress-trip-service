@@ -1,5 +1,6 @@
 package com.koliexpress.tripservice.model;
 
+import com.koliexpress.tripservice.config.ApiPaths;
 import com.koliexpress.tripservice.enums.TransportType;
 import com.koliexpress.tripservice.enums.TripStatus;
 import com.koliexpress.tripservice.model.transport.Transport;
@@ -122,6 +123,13 @@ public class Trip {
             case AVAILABLE, MATCHED, IN_PROGRESS -> true;
             default -> false;
         };
+    }
+
+    @Transient
+    public String getUrl(){
+        return ApiPaths.TRIPS.path()
+                + '/'
+                + this.getId();
     }
 
 }

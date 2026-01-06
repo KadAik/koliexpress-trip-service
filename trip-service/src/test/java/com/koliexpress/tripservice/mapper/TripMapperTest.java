@@ -65,7 +65,7 @@ class TripMapperTest {
 
     @ParameterizedTest(name = "Should map Trip with transport type {0} correctly")
     @MethodSource("transportTypeCases")
-    void testToResponseDto_withDifferentTransportTypes_shouldSetCorrectTransportDetailsFields(
+    void testToDto_withDifferentTransportTypes_shouldSetCorrectTransportDetailsFields(
             TransportType transport,
             Supplier<TripTestBuilder> tripBuilderSupplier,
             String expectedTransport
@@ -78,7 +78,7 @@ class TripMapperTest {
                 .build();
 
         // Act
-        TripResponseDto result = tripMapper.toResponseDto(trip);
+        TripResponseDto result = tripMapper.toDto(trip);
 
         // Assert (common)
         assertThat(result).isNotNull();
@@ -213,7 +213,7 @@ class TripMapperTest {
                 .build();
 
         // Act
-        Trip updatedTrip = tripMapper.updateEntityFromDtoAndReturn(dto, existingTrip, locationMapper);
+        Trip updatedTrip = tripMapper.updateEntityFromDtoAndReturn(dto, existingTrip);
 
         // Assert
         assertThat(updatedTrip).isNotNull();

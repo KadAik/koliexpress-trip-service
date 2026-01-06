@@ -4,6 +4,7 @@ import com.koliexpress.tripservice.builder.dto.trip.FlightTripRequestDtoTestBuil
 import com.koliexpress.tripservice.dto.trip.FlightTripRequestDto;
 import com.koliexpress.tripservice.dto.trip.TripRequestDto;
 import com.koliexpress.tripservice.dto.trip.TripResponseDto;
+import com.koliexpress.tripservice.dto.trip.TripResponseDtoNonVerbose;
 import com.koliexpress.tripservice.exceptions.InvalidArgumentException;
 import com.koliexpress.tripservice.exceptions.ResourceNotFoundException;
 import com.koliexpress.tripservice.service.TripService;
@@ -42,10 +43,10 @@ public class TripControllerTest {
     void testGetAllTrips_whenTripsExist_shouldReturnListOfTrips() throws Exception {
         // Arrange
 
-        TripResponseDto dto_1 = TripResponseDto
+        TripResponseDtoNonVerbose dto_1 = TripResponseDtoNonVerbose
                 .builder()
                 .build();
-        TripResponseDto dto_2 = TripResponseDto
+        TripResponseDtoNonVerbose dto_2 = TripResponseDtoNonVerbose
                 .builder()
                 .build();
 

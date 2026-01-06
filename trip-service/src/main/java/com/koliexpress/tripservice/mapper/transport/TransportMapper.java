@@ -8,8 +8,6 @@ import com.koliexpress.tripservice.model.transport.FlightTransport;
 import com.koliexpress.tripservice.model.transport.Transport;
 import org.mapstruct.*;
 
-import java.time.LocalDateTime;
-
 @Mapper(
         componentModel = "spring",
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
@@ -39,6 +37,8 @@ public interface TransportMapper {
     @SubclassMapping(source = CarTransport.class, target = CarTransportResponseDto.class)
     @Mapping(target = "transportType", source = "type")
     TransportResponseDto toDto(Transport entity);
+
+    TransportResponseDtoNonVerbose toDtoNonVersbose(Transport entity);
 
     // ============================================
     // UPDATE (DTO → Entity)

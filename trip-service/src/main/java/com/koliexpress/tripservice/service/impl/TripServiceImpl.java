@@ -18,6 +18,7 @@ import com.koliexpress.tripservice.repository.TripRepository;
 import com.koliexpress.tripservice.service.TripService;
 import jakarta.transaction.Transactional;
 import org.hibernate.Hibernate;
+import org.hibernate.proxy.HibernateProxy;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -47,10 +48,10 @@ public class TripServiceImpl implements TripService {
     }
 
     @Override
-    public List<TripResponseDto> getAllTrips(){
+    public List<TripResponseDtoNonVerbose> getAllTrips(){
         return tripRepository
                 .findAll().stream()
-                .map(tripMapper::toResponseDto)
+                .map(tripMapper::toDtoNonVerbose)
                 .toList();
     }
 
@@ -60,52 +61,21 @@ public class TripServiceImpl implements TripService {
         if (id == null || id.isEmpty()) {
             throw new InvalidArgumentException("ID is required", "id");
         }
-        UUID tripId;
-        try {
-            tripId = UUID.fromString(id);
-        } catch (IllegalArgumentException e) {
-            throw new InvalidArgumentException("Invalid UUID string", "id");
-        }
+        UUID tripId = parseUUID(id);
 
         Trip repositoryTrip = tripRepository
             .findById(tripId)
             .orElseThrow(() -> new ResourceNotFoundException("Trip with id " + id + " not found"));
 
         Transport transport = repositoryTrip.getTransport();
-
-        // LOG 1: Check what we got from database
-        System.out.println("=== BEFORE INITIALIZE ===");
-        System.out.println("Transport class: " + transport.getClass().getName());
-        System.out.println("Is Transport: " + (transport instanceof Transport));
-        System.out.println("Is HibernateProxy: " + (transport instanceof org.hibernate.proxy.HibernateProxy));
-        System.out.println("Is FlightTransport: " + (transport instanceof FlightTransport));
-        System.out.println("IsFlightTransport: " + (transport.isFlight()));
-
-        // UNWRAP THE PROXY
-        if (transport != null) {
+        // Transport might be lazy loaded and might be a Hibernate proxy so we initialize it.
+        if (transport instanceof HibernateProxy) {
             Hibernate.initialize(transport);  // Force load from DB
             Transport unproxied = (Transport) Hibernate.unproxy(transport);  // Get real object
             repositoryTrip.setTransport(unproxied);  // Replace proxy with real object in Trip
         }
 
-        // AFTER
-        System.out.println("=== AFTER UNPROXY ===");
-        System.out.println("Transport class: " + repositoryTrip.getTransport().getClass().getName());
-        System.out.println("Is HibernateProxy: " + (repositoryTrip.getTransport() instanceof org.hibernate.proxy.HibernateProxy));
-        System.out.println("Is FlightTransport: " + (repositoryTrip.getTransport() instanceof FlightTransport));
-
-        TripResponseDto response = tripMapper.toResponseDto(repositoryTrip);
-        // Check result
-        System.out.println("=== RESULT ===");
-        System.out.println("Dto class: " + response.getTransportDetails().getClass().getName());
-        if (response.getTransportDetails() instanceof FlightTransportResponseDto flight) {
-            System.out.println("✓ It's a FlightTransportResponseDto!");
-            System.out.println("Flight number: " + flight.getFlightNumber());
-        } else {
-            System.out.println("✗ It's just a base TransportResponseDto");
-        }
-
-    return response;
+        return tripMapper.toDto(repositoryTrip);
     }
 
     @Override
@@ -131,7 +101,7 @@ public class TripServiceImpl implements TripService {
         // 4. Persist
         Trip savedTrip = tripRepository.save(trip);
 
-        return tripMapper.toResponseDto(savedTrip);
+        return tripMapper.toDto(savedTrip);
     }
 
     @Override
@@ -182,11 +152,19 @@ public class TripServiceImpl implements TripService {
         // 6. Save the updated Trip : due to @Transactional, this is optional but for clarity
         Trip savedTrip = tripRepository.save(updatedTrip);
 
-        return tripMapper.toResponseDto(savedTrip);
+        return tripMapper.toDto(savedTrip);
     }
 
     public void deleteTrip(String id){
         tripRepository.deleteById(UUID.fromString(id));
+    }
+
+    private static UUID parseUUID(String id) {
+        try {
+            return UUID.fromString(id);
+        } catch (Exception e) {
+            throw new InvalidArgumentException("Invalid UUID string", "id");
+        }
     }
 
 

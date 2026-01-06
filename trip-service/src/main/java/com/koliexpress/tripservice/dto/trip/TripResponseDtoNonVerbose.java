@@ -3,7 +3,7 @@ package com.koliexpress.tripservice.dto.trip;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.koliexpress.tripservice.dto.LocationResponseDto;
-import com.koliexpress.tripservice.dto.transport.TransportResponseDto;
+import com.koliexpress.tripservice.dto.transport.TransportResponseDtoNonVerbose;
 import com.koliexpress.tripservice.enums.TransportType;
 import com.koliexpress.tripservice.enums.TripStatus;
 import lombok.*;
@@ -22,45 +22,45 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class TripResponseDto implements Serializable {
-    UUID id;
+public class TripResponseDtoNonVerbose implements Serializable {
+    private UUID id;
 
-    String url;
+    private String url;
 
     @JsonProperty(value = "traveler_id")
-    UUID travelerId;
+    private UUID travelerId;
 
-    LocationResponseDto origin;
-    LocationResponseDto destination;
+    private LocationResponseDto origin;
+    private LocationResponseDto destination;
 
     @JsonProperty(value = "departure_date")
-    LocalDateTime departureDate;
+    private LocalDateTime departureDate;
 
     @JsonProperty("arrival_date")
-    LocalDateTime arrivalDate;
+    private LocalDateTime arrivalDate;
 
     @JsonProperty("available_weight")
-    BigDecimal availableWeight;
+    private BigDecimal availableWeight;
 
     @JsonProperty("price_per_kg")
-    BigDecimal pricePerKg;
+    private BigDecimal pricePerKg;
 
     @JsonProperty("price_asked")
-    BigDecimal priceAsked;
+    private BigDecimal priceAsked;
 
     @JsonProperty("transport_type")
-    TransportType transportType;
+    private TransportType transportType;
 
-    @JsonProperty("transport_details")
-    TransportResponseDto transportDetails;
+    @JsonProperty("transport")
+    private TransportResponseDtoNonVerbose transport;
 
     TripStatus status;
-    String notice;
+    private String notice;
 
     @JsonProperty("created_at")
-    LocalDateTime createdAt;
+    private LocalDateTime createdAt;
 
     @JsonProperty("updated_at")
-    LocalDateTime updatedAt;
+    private LocalDateTime updatedAt;
 
 }
